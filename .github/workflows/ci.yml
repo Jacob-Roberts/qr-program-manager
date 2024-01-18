@@ -23,16 +23,16 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: "pnpm"
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
 
       - name: 🐶 Remove Husky
         run: pnpm pkg delete scripts.prepare
@@ -53,16 +53,16 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: "pnpm"
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
 
       - name: 🐶 Remove Husky
         run: pnpm pkg delete scripts.prepare
@@ -80,16 +80,16 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 20
           cache: "pnpm"
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
 
       - name: 🐶 Remove Husky
         run: pnpm pkg delete scripts.prepare
