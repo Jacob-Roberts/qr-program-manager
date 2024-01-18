@@ -29,6 +29,11 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+
       - name: 🐶 Remove Husky
         run: pnpm pkg delete scripts.prepare
 
@@ -54,6 +59,11 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+
       - name: 🐶 Remove Husky
         run: pnpm pkg delete scripts.prepare
 
@@ -75,6 +85,11 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
 
       - name: 🐶 Remove Husky
         run: pnpm pkg delete scripts.prepare
