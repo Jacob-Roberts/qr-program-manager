@@ -1,0 +1,15 @@
+name: Keep Planetscale alive cron job
+on:
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch: {}
+
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call endpoint to keep the database alive
+        run: |
+          curl --request PUT \
+            --url '${{ secrets.SITE_URL }}/api/keep-alive' \
+            --header 'keep-alive-api-secret: ${{ secrets.KEEP_ALIVE_API_SECRET }}'

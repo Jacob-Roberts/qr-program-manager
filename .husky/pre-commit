@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Linting and Formatting Code, if there is an error, run `npm run lint` and `npm run format` before commiting"
+
+npx lint-staged
