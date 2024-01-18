@@ -95,7 +95,7 @@ jobs:
         run: pnpm pkg delete scripts.prepare
 
       - name: 📥 Download deps
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
