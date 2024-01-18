@@ -1,14 +1,21 @@
+// import { client } from "../../sanity/lib/client.ts";
+
 export const dynamic = "force-dynamic"; // defaults to auto
 
 type GetParams = {
   params: {
-    filename: string;
+    slug: string;
   };
 };
 
 export async function GET(request: Request, { params }: GetParams) {
-  // filename for the file that the user is trying to download
-  const filename = params.filename;
+  // The Sanity Slug that we want to download
+  const slug = params.slug;
+
+  // const res = await client.fetch(
+  //   "*[_type == 'program' && slug.current == $slug][0]",
+  //   { slug },
+  // );
 
   // external file URL
   const DUMMY_URL =
@@ -21,7 +28,7 @@ export async function GET(request: Request, { params }: GetParams) {
   return new Response(response.body, {
     headers: {
       ...response.headers, // copy the previous headers
-      "content-disposition": `inline; filename="${filename}"`,
+      "content-disposition": `inline; filename="${slug}"`,
     },
   });
 }
