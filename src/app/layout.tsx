@@ -1,5 +1,6 @@
 import "#/styles/globals.css";
 
+import TailwindIndicator from "#/components/tailwind-indicator";
 import { TRPCReactProvider } from "#/trpc/react";
 import { Inter } from "next/font/google";
 
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TailwindIndicator />
       </body>
     </html>
   );
