@@ -1,9 +1,17 @@
 import { EditQRCode } from "#/components/edit-qrcode.tsx";
 import { api } from "#/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function AdminPage() {
   noStore();
+
+  const sessionToken = cookies().get("next-auth.session-token");
+
+  if (!sessionToken) {
+    return redirect("/api/auth/signin");
+  }
 
   const cards = (await api.program.getPrograms.query()).map(card => ({
     id: card.id,

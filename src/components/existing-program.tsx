@@ -1,6 +1,7 @@
 "use client";
 
 import { env } from "#/env";
+import { useDoubleCheck } from "#/lib/utils";
 import { api } from "#/trpc/react";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
@@ -31,6 +32,7 @@ export function ExistingProgramCard({
   card: ExistingProgramCardProps;
 }) {
   const router = useRouter();
+  const dc = useDoubleCheck();
 
   const deleteProgramMutation = api.program.deleteProgram.useMutation({
     onSuccess: () => {
@@ -51,14 +53,20 @@ export function ExistingProgramCard({
             <Icon name="square-pen" />
           </Button>
           <Button
-            onClick={() => {
-              deleteProgramMutation.mutate(card.id);
-            }}
+            {...dc.getButtonProps({
+              type: "button",
+              value: "delete",
+              onClick: () => {
+                if (dc.doubleCheck) {
+                  deleteProgramMutation.mutate(card.id);
+                }
+              },
+            })}
             variant="outline"
-            size="icon"
+            size={dc.doubleCheck ? "default" : "icon"}
             className="ml-2 text-red-500 hover:text-red-600 active:text-red-700"
           >
-            <Icon name="trash-2" />
+            {dc.doubleCheck ? `Are you sure?` : <Icon name="trash-2" />}
           </Button>
         </div>
         <CardDescription>Created {card.createdAt}</CardDescription>
@@ -70,7 +78,7 @@ export function ExistingProgramCard({
         </div>
         <div className="flex items-center justify-center rounded-lg bg-white p-4">
           <a target="_blank" href={`/${card.slug}`}>
-            <QRCode value={`${env.NEXT_PUBLIC_VERCEL_URL}/${card.slug}`} />
+            <QRCode value={`${env.NEXT_PUBLIC_DEPLOY_URL}/${card.slug}`} />
           </a>
         </div>
         <Button className="self-start">Print QR Code</Button>
