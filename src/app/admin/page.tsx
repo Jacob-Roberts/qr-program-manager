@@ -1,36 +1,25 @@
-import { EditQRCode } from "#/components/edit-qrcode1.tsx";
+import { EditQRCode } from "#/components/edit-qrcode.tsx";
+import { api } from "#/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
 
-export default function AdminPage() {
+export default async function AdminPage() {
   noStore();
 
-  const cards = [
-    {
-      id: "1",
-      name: "QR Code 1",
-      slug: "qr-code-1",
-      createdAt: formatDate("2021-01-01"),
-      uploadedFileName: "Ward Program 2024-01-21.pdf",
-    },
-    {
-      id: "2",
-      name: "QR Code 2",
-      slug: "qr-code-2",
-      createdAt: formatDate("2021-01-02"),
-      uploadedFileName: "Ward Program 2024-01-21.pdf",
-    },
-    {
-      id: "3",
-      name: "QR Code 3",
-      slug: "qr-code-3",
-      createdAt: formatDate("2024-01-03"),
-      uploadedFileName: "Ward Program 2024-01-21.pdf",
-    },
-  ];
+  const cards = (await api.program.getPrograms.query()).map(card => ({
+    id: card.id,
+    name: card.name,
+    slug: card.slug,
+    createdAt: formatDate(card.createdAt),
+    uploadedFileName: card.fileUploadName,
+  }));
+
   return <EditQRCode cards={cards} />;
 }
 
-function formatDate(date: string) {
+function formatDate(date: string | Date) {
+  if (date instanceof Date) {
+    date = date.toISOString();
+  }
   noStore();
   const currentDate = new Date();
   if (!date.includes("T")) {

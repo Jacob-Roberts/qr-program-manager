@@ -38,6 +38,25 @@ export const posts = mysqlTable(
   }),
 );
 
+export const programs = mysqlTable(
+  "program",
+  {
+    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    slug: varchar("slug", { length: 256 }).notNull(),
+    name: varchar("name", { length: 256 }).notNull(),
+    createdById: varchar("createdById", { length: 255 }).notNull(),
+    fileUploadName: varchar("fileUploadName", { length: 256 }).notNull(),
+    fileSanityId: varchar("fileSanityId", { length: 256 }).notNull(),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
+  },
+  example => ({
+    createdByIdIdx: index("createdById_idx").on(example.createdById),
+  }),
+);
+
 export const keepAlive = mysqlTable(
   "keepAlive",
   {
