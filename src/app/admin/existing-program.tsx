@@ -1,29 +1,29 @@
 "use client";
 
-import { env } from "#/env";
-import { useDoubleCheck } from "#/lib/utils";
-import { api } from "#/trpc/react";
-import { Label } from "@radix-ui/react-label";
-import { useRouter } from "next/navigation";
-import QRCode from "react-qr-code";
-
-import { Icon } from "./Icon";
-import { Button } from "./ui/button";
+import { Icon } from "#/components/Icon";
+import { Button } from "#/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Input } from "./ui/input";
+} from "#/components/ui/card";
+import { env } from "#/env";
+import { useDoubleCheck } from "#/lib/utils";
+import { api } from "#/trpc/react";
+import { UploadButton } from "#/utils/uploadthing";
+import { Label } from "@radix-ui/react-label";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import QRCode from "react-qr-code";
 
 type ExistingProgramCardProps = {
   id: number;
-  name: string;
   slug: string;
   uploadedFileName: string;
   createdAt: string;
+  updatedAt: string;
 };
 
 export function ExistingProgramCard({
@@ -33,6 +33,8 @@ export function ExistingProgramCard({
 }) {
   const router = useRouter();
   const dc = useDoubleCheck();
+
+  const [error, setError] = useState<string | null>(null);
 
   const deleteProgramMutation = api.program.deleteProgram.useMutation({
     onSuccess: () => {
@@ -44,14 +46,14 @@ export function ExistingProgramCard({
     <Card key={card.id} className="mx-auto max-w-2xl">
       <CardHeader>
         <div className="flex flex-row items-center">
-          <CardTitle>{card.name}</CardTitle>
-          <Button
+          <CardTitle>{card.uploadedFileName}</CardTitle>
+          {/* <Button
             variant="outline"
             size="icon"
             className="ml-auto hover:text-gray-900 active:text-gray-800"
           >
             <Icon name="square-pen" />
-          </Button>
+          </Button> */}
           <Button
             {...dc.getButtonProps({
               type: "button",
@@ -70,18 +72,34 @@ export function ExistingProgramCard({
           </Button>
         </div>
         <CardDescription>Created {card.createdAt}</CardDescription>
+        <CardDescription>Updated {card.updatedAt}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="pdf">{card.uploadedFileName} (Click to Edit)</Label>
-          <Input accept=".pdf" id="pdf" type="file" />
+          <Label className="flex justify-center text-xl">Replace File</Label>
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={() => {
+              // Do something with the response
+              router.refresh();
+            }}
+            onUploadError={(error: Error) => {
+              setError(error.message);
+            }}
+            input={{ programId: card.id }}
+          />
+          {error && <div className="text-red-500">{error}</div>}
         </div>
-        <div className="flex items-center justify-center rounded-lg bg-white p-4">
-          <a target="_blank" href={`/${card.slug}`}>
+        <div className="flex items-center justify-center">
+          <a
+            target="_blank"
+            href={`/${card.slug}`}
+            className="rounded-lg bg-white p-4"
+          >
             <QRCode value={`${env.NEXT_PUBLIC_DEPLOY_URL}/${card.slug}`} />
           </a>
         </div>
-        <Button className="self-start">Print QR Code</Button>
+        {/* <Button className="self-start">Print QR Code</Button> */}
       </CardContent>
     </Card>
   );

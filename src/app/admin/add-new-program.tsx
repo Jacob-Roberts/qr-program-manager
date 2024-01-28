@@ -1,15 +1,14 @@
 "use client";
 
-import { api } from "#/trpc/react";
-import { useRouter } from "next/navigation";
-
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "#/components/ui/card";
+import { api } from "#/trpc/react";
+import { useRouter } from "next/navigation";
 
 export function AddNewProgram() {
   const router = useRouter();
@@ -24,7 +23,7 @@ export function AddNewProgram() {
     <Card
       className="group mx-auto flex h-[100px] max-w-2xl items-center justify-center border-2 border-dashed border-gray-300 hover:cursor-pointer hover:border-blue-400 dark:border-gray-600"
       onClick={() => {
-        addNewProgramMutation.mutate({ name: "Jake" });
+        addNewProgramMutation.mutate();
       }}
     >
       <CardHeader>

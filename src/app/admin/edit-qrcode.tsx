@@ -3,10 +3,10 @@ import { ExistingProgramCard } from "./existing-program";
 
 type QRProgram = {
   id: number;
-  name: string;
   slug: string;
   uploadedFileName: string;
   createdAt: string;
+  updatedAt: string;
 };
 
 type EditQRCodeProps = {

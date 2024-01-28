@@ -1,8 +1,11 @@
 import "#/styles/globals.css";
 
+import { ourFileRouter } from "#/app/api/uploadthing/core";
 import TailwindIndicator from "#/components/tailwind-indicator";
 import { TRPCReactProvider } from "#/trpc/react";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { Inter } from "next/font/google";
+import { extractRouterConfig } from "uploadthing/server";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,6 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
+        <NextSSRPlugin
+          /**
+           * The `extractRouterConfig` will extract **only** the route configs
+           * from the router to prevent additional information from being
+           * leaked to the client. The data passed to the client is the same
+           * as if you were to fetch `/api/uploadthing` directly.
+           */
+          routerConfig={extractRouterConfig(ourFileRouter)}
+        />
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <TailwindIndicator />
       </body>

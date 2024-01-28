@@ -39,19 +39,16 @@ export const programRouter = createTRPCRouter({
       .orderBy(programs.updatedAt, programs.createdAt);
   }),
 
-  addProgram: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(programs).values({
-        slug: createSlug("program"),
-        name: input.name,
-        createdById: ctx.session.user.id,
-        fileSanityId: "123",
-        fileUploadName: "Workplace.pdf",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }),
+  addProgram: protectedProcedure.mutation(async ({ ctx }) => {
+    await ctx.db.insert(programs).values({
+      slug: createSlug("program"),
+      createdById: ctx.session.user.id,
+      fileUploadId: "not-uploaded-yet",
+      fileUploadName: "No file uploaded yet",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }),
 
   deleteProgram: protectedProcedure
     .input(z.number())

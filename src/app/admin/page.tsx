@@ -1,15 +1,16 @@
-import { EditQRCode } from "#/components/edit-qrcode.tsx";
 import { api } from "#/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
+
+import { EditQRCode } from "./edit-qrcode.tsx";
 
 export default async function AdminPage() {
   noStore();
 
   const cards = (await api.program.getPrograms.query()).map(card => ({
     id: card.id,
-    name: card.name,
     slug: card.slug,
     createdAt: formatDate(card.createdAt),
+    updatedAt: formatDate(card.updatedAt),
     uploadedFileName: card.fileUploadName,
   }));
 
