@@ -43,17 +43,10 @@ export function ExistingProgramCard({
   });
 
   return (
-    <Card key={card.id} className="mx-auto max-w-2xl">
+    <Card key={card.id} className="mx-auto w-full sm:w-96">
       <CardHeader>
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center justify-between">
           <CardTitle>{card.uploadedFileName}</CardTitle>
-          {/* <Button
-            variant="outline"
-            size="icon"
-            className="ml-auto hover:text-gray-900 active:text-gray-800"
-          >
-            <Icon name="square-pen" />
-          </Button> */}
           <Button
             {...dc.getButtonProps({
               type: "button",
