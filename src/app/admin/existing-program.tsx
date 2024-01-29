@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "#/components/ui/card";
 import { env } from "#/env";
-import { useDoubleCheck } from "#/lib/utils";
+import { useDoubleCheck } from "#/lib/client-utils";
 import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
 import { Label } from "@radix-ui/react-label";
