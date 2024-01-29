@@ -1,4 +1,3 @@
-// import { client } from "../../sanity/lib/client.ts";
 import { db } from "#/server/db";
 import { programs } from "#/server/db/schema";
 import { eq } from "drizzle-orm";

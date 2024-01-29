@@ -18,15 +18,14 @@ export default async function Home() {
           <div className="flex lg:flex-1">
             <span className="-m-1.5 p-1.5">
               <span className="sr-only">QR Program Manager</span>
-              <Icon name="logo" className="h-12 w-auto" />
+              <Icon name="logo" className="h-12 w-12 text-black" />
             </span>
           </div>
           <div className="flex flex-1 justify-end">
             <Link
               href={session ? "/admin" : "/api/auth/signin?callbackUrl=/admin"}
               className={cn(
-                `rounded-full bg-white/10 px-10 py-3 text-sm font-semibold leading-6 text-gray-900 no-underline transition hover:bg-white/20`,
-                session ? "border border-indigo-500" : "border border-black",
+                `rounded-full border border-indigo-500 bg-white/10 px-10 py-3 text-sm font-semibold leading-6 text-indigo-500 no-underline transition hover:bg-indigo-500 hover:text-white`,
               )}
             >
               {session ? "Dashboard" : "Sign in"} &rarr;
