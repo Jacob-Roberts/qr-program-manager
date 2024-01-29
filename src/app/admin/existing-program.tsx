@@ -12,6 +12,7 @@ import {
 } from "#/components/ui/card";
 import { env } from "#/env";
 import { useDoubleCheck } from "#/lib/client-utils";
+import { cn } from "#/lib/utils";
 import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
 import { Label } from "@radix-ui/react-label";
@@ -66,7 +67,10 @@ export function ExistingProgramCard({
             })}
             variant="outline"
             size={dc.doubleCheck ? "default" : "icon"}
-            className="ml-2 text-red-500 hover:text-red-600 active:text-red-700"
+            className={cn(
+              "min-w-10 text-red-500 hover:text-red-600 active:text-red-700",
+              dc.doubleCheck && "w-44",
+            )}
           >
             {loading ? (
               <LoadingSpinner />

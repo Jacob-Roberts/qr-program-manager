@@ -4,7 +4,7 @@ import {
   publicProcedure,
 } from "#/server/api/trpc";
 import { posts, programs } from "#/server/db/schema";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
 import { z } from "zod";
 
@@ -36,7 +36,7 @@ export const programRouter = createTRPCRouter({
       .select()
       .from(programs)
       .where(eq(programs.createdById, ctx.session.user.id))
-      .orderBy(programs.updatedAt, programs.createdAt);
+      .orderBy(asc(programs.createdAt));
   }),
 
   addProgram: protectedProcedure.mutation(async ({ ctx }) => {
