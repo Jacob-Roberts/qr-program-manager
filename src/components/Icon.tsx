@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 import type { IconName } from "../icons/name";
 import { cn } from "../lib/utils.ts";
 
-const IconHref = "/sprite.3545c3544e.svg";
+const IconHref = "/sprite.424348d112.svg";
 
 export { IconHref };
 export type { IconName };

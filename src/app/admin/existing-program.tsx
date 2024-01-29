@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "#/components/Icon";
+import { LoadingSpinner } from "#/components/loading-spinner";
 import { Button } from "#/components/ui/button";
 import {
   Card,
@@ -15,7 +16,7 @@ import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import QRCode from "react-qr-code";
 
 type ExistingProgramCardProps = {
@@ -32,15 +33,20 @@ export function ExistingProgramCard({
   card: ExistingProgramCardProps;
 }) {
   const router = useRouter();
+  const [isLoading, startTransition] = useTransition();
   const dc = useDoubleCheck();
 
   const [error, setError] = useState<string | null>(null);
 
   const deleteProgramMutation = api.program.deleteProgram.useMutation({
     onSuccess: () => {
-      router.refresh();
+      startTransition(() => {
+        router.refresh();
+      });
     },
   });
+
+  const loading = deleteProgramMutation.isLoading || isLoading;
 
   return (
     <Card key={card.id} className="mx-auto w-full sm:w-96">
@@ -52,6 +58,7 @@ export function ExistingProgramCard({
               type: "button",
               value: "delete",
               onClick: () => {
+                if (loading) return;
                 if (dc.doubleCheck) {
                   deleteProgramMutation.mutate(card.id);
                 }
@@ -61,7 +68,13 @@ export function ExistingProgramCard({
             size={dc.doubleCheck ? "default" : "icon"}
             className="ml-2 text-red-500 hover:text-red-600 active:text-red-700"
           >
-            {dc.doubleCheck ? `Are you sure?` : <Icon name="trash-2" />}
+            {loading ? (
+              <LoadingSpinner />
+            ) : dc.doubleCheck ? (
+              `Are you sure?`
+            ) : (
+              <Icon name="trash-2" />
+            )}
           </Button>
         </div>
         <CardDescription>Created {card.createdAt}</CardDescription>
@@ -70,17 +83,29 @@ export function ExistingProgramCard({
       <CardContent className="flex flex-col gap-4">
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label className="flex justify-center text-xl">Replace File</Label>
-          <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={() => {
-              // Do something with the response
-              router.refresh();
-            }}
-            onUploadError={(error: Error) => {
-              setError(error.message);
-            }}
-            input={{ programId: card.id }}
-          />
+          {loading ? (
+            // Dummy button to keep the layout the same
+            <div className="flex flex-col items-center justify-center gap-1">
+              <button
+                className="relative flex h-10 w-36 items-center justify-center overflow-hidden rounded-md bg-blue-400 text-gray-100 after:transition-[width] after:duration-500 focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2"
+                disabled
+              >
+                Choose File
+              </button>
+            </div>
+          ) : (
+            <UploadButton
+              endpoint="imageUploader"
+              onClientUploadComplete={() => {
+                // Do something with the response
+                router.refresh();
+              }}
+              onUploadError={(error: Error) => {
+                setError(error.message);
+              }}
+              input={{ programId: card.id }}
+            />
+          )}
           {error && <div className="text-red-500">{error}</div>}
         </div>
         <div className="flex items-center justify-center">
