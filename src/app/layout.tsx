@@ -2,6 +2,7 @@ import "#/styles/globals.css";
 
 import { ourFileRouter } from "#/app/api/uploadthing/core";
 import { TailwindIndicator } from "#/components/tailwind-indicator";
+import { env } from "#/env";
 import { TRPCReactProvider } from "#/trpc/react";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { Inter } from "next/font/google";
@@ -17,6 +18,7 @@ export const metadata = {
   description:
     "Create a QR code for anything, and manage the content behind it. No app required.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  metadataBase: env.NEXT_PUBLIC_DEPLOY_URL,
 };
 
 export default function RootLayout({
