@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "#/components/ui/card";
@@ -52,41 +53,13 @@ export function ExistingProgramCard({
   const canvasID = `${card.id.toString()}-qr-canvas`;
 
   return (
-    <Card key={card.id} className="mx-auto w-full sm:w-96">
+    <Card key={card.id} className="mx-auto flex w-full flex-col sm:w-96">
       <CardHeader>
-        <div className="flex flex-row items-center justify-between">
-          <CardTitle>{card.uploadedFileName}</CardTitle>
-          <Button
-            {...dc.getButtonProps({
-              type: "button",
-              value: "delete",
-              onClick: () => {
-                if (loading) return;
-                if (dc.doubleCheck) {
-                  deleteProgramMutation.mutate(card.id);
-                }
-              },
-            })}
-            variant="outline"
-            size={dc.doubleCheck ? "default" : "icon"}
-            className={cn(
-              "min-w-10 text-red-500 hover:text-red-600 active:text-red-700",
-              dc.doubleCheck && "w-44",
-            )}
-          >
-            {loading ? (
-              <LoadingSpinner />
-            ) : dc.doubleCheck ? (
-              `Are you sure?`
-            ) : (
-              <Icon name="trash-2" />
-            )}
-          </Button>
-        </div>
+        <CardTitle>{card.uploadedFileName}</CardTitle>
         <CardDescription>Created {card.createdAt}</CardDescription>
         <CardDescription>Updated {card.updatedAt}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-grow flex-col gap-4">
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label className="flex justify-center text-xl">Replace File</Label>
           {loading ? (
@@ -127,6 +100,8 @@ export function ExistingProgramCard({
             />
           </a>
         </div>
+      </CardContent>
+      <CardFooter className="mt-auto justify-between">
         <Button
           variant="outline"
           size="icon"
@@ -149,7 +124,33 @@ export function ExistingProgramCard({
         >
           <Icon name="download" />
         </Button>
-      </CardContent>
+        <Button
+          {...dc.getButtonProps({
+            type: "button",
+            value: "delete",
+            onClick: () => {
+              if (loading) return;
+              if (dc.doubleCheck) {
+                deleteProgramMutation.mutate(card.id);
+              }
+            },
+          })}
+          variant="outline"
+          size={dc.doubleCheck ? "default" : "icon"}
+          className={cn(
+            "min-w-10 text-red-500 hover:text-red-600 active:text-red-700",
+            dc.doubleCheck && "w-44",
+          )}
+        >
+          {loading ? (
+            <LoadingSpinner />
+          ) : dc.doubleCheck ? (
+            `Are you sure?`
+          ) : (
+            <Icon name="trash-2" />
+          )}
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
