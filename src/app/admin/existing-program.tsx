@@ -17,8 +17,8 @@ import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
+import { QRCodeCanvas } from "qrcode.react";
 import { useState, useTransition } from "react";
-import QRCode from "react-qr-code";
 
 type ExistingProgramCardProps = {
   id: number;
@@ -48,6 +48,8 @@ export function ExistingProgramCard({
   });
 
   const loading = deleteProgramMutation.isLoading || isLoading;
+
+  const canvasID = `${card.id.toString()}-qr-canvas`;
 
   return (
     <Card key={card.id} className="mx-auto w-full sm:w-96">
@@ -118,10 +120,35 @@ export function ExistingProgramCard({
             href={`/${card.slug}`}
             className="rounded-lg bg-white p-4"
           >
-            <QRCode value={`${env.NEXT_PUBLIC_DEPLOY_URL}/${card.slug}`} />
+            <QRCodeCanvas
+              id={canvasID}
+              size={256}
+              value={`${env.NEXT_PUBLIC_DEPLOY_URL}/${card.slug}`}
+            />
           </a>
         </div>
-        {/* <Button className="self-start">Print QR Code</Button> */}
+        <Button
+          variant="outline"
+          size="icon"
+          className=""
+          onClick={() => {
+            const qrCodeCanvas = document.getElementById(canvasID);
+            if (qrCodeCanvas === null) {
+              return;
+            }
+
+            //@ts-expect-error toDataURL
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+            const url = qrCodeCanvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = "filename.png";
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            link.href = url;
+            link.click();
+          }}
+        >
+          <Icon name="download" />
+        </Button>
       </CardContent>
     </Card>
   );

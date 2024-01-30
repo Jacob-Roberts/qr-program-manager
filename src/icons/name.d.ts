@@ -2,6 +2,7 @@
 
 export type IconName =
   | "chevron-down"
+  | "download"
   | "logo"
   | "plus"
   | "spinner"
