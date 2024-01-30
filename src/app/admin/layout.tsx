@@ -45,11 +45,11 @@ export default async function AdminLayout({
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+            {/* <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuSeparator /> */}
+            {/* <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem>
               <Link href="/api/auth/signout">Logout</Link>
             </DropdownMenuItem>
