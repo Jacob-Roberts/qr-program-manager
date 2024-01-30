@@ -141,7 +141,7 @@ export function ExistingProgramCard({
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
             const url = qrCodeCanvas.toDataURL("image/png");
             const link = document.createElement("a");
-            link.download = "filename.png";
+            link.download = `${card.slug}.png`;
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             link.href = url;
             link.click();
