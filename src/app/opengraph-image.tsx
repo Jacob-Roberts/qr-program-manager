@@ -34,7 +34,7 @@ export default async function Image() {
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#fff",
-          fontSize: 64,
+          fontSize: 48,
           fontWeight: 600,
         }}
       >
