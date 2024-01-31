@@ -39,7 +39,7 @@ export const ourFileRouter = {
         .from(programs)
         .where(eq(programs.id, input.programId));
 
-      if (!program?.[0] || program[0].createdById !== user.id) {
+      if (!program?.[0] || program[0].ownerId !== user.id) {
         throw new Error("Unauthorized");
       }
 

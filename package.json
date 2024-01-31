@@ -11,7 +11,7 @@
     "db:push": "drizzle-kit push:mysql",
     "db:studio": "drizzle-kit studio",
     "predev": "npm run build:icons --silent",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "format": "prettier --write .",
     "lint": "next lint",
     "prepare": "husky install",

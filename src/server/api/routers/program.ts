@@ -3,24 +3,12 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "#/server/api/trpc";
-import { posts, programs } from "#/server/db/schema";
+import { programs } from "#/server/db/schema";
 import { asc, eq } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
 import { z } from "zod";
 
 export const programRouter = createTRPCRouter({
-  create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      await ctx.db.insert(posts).values({
-        name: input.name,
-        createdById: ctx.session.user.id,
-      });
-    }),
-
   getLatest: publicProcedure.query(({ ctx }) => {
     return ctx.db.query.posts.findFirst({
       orderBy: (posts, { desc }) => [desc(posts.createdAt)],
@@ -35,14 +23,14 @@ export const programRouter = createTRPCRouter({
     return ctx.db
       .select()
       .from(programs)
-      .where(eq(programs.createdById, ctx.session.user.id))
+      .where(eq(programs.ownerId, ctx.session.user.id))
       .orderBy(asc(programs.createdAt));
   }),
 
   addProgram: protectedProcedure.mutation(async ({ ctx }) => {
     await ctx.db.insert(programs).values({
       slug: createSlug("program"),
-      createdById: ctx.session.user.id,
+      ownerId: ctx.session.user.id,
       fileUploadId: "not-uploaded-yet",
       fileUploadName: "No file uploaded yet",
       createdAt: new Date(),

@@ -43,7 +43,7 @@ export const programs = mysqlTable(
   {
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     slug: varchar("slug", { length: 256 }).notNull(),
-    createdById: varchar("createdById", { length: 255 }).notNull(),
+    ownerId: varchar("ownerId", { length: 255 }).notNull(),
     fileUploadName: varchar("fileUploadName", { length: 256 }).notNull(),
     fileUploadId: varchar("fileUploadId", { length: 256 }).notNull(),
     createdAt: timestamp("created_at")
@@ -52,7 +52,24 @@ export const programs = mysqlTable(
     updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
   },
   example => ({
-    createdByIdIdx: index("createdById_idx").on(example.createdById),
+    ownerIdIdx: index("ownerId_idx").on(example.ownerId),
+  }),
+);
+
+export const programsShares = mysqlTable(
+  "programShare",
+  {
+    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    programId: bigint("programId", { mode: "number" }).notNull(),
+    userId: varchar("userId", { length: 255 }).notNull(),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
+  },
+  example => ({
+    programIdIdx: index("programId_idx").on(example.programId),
+    userIdIdx: index("userId_idx").on(example.userId),
   }),
 );
 
