@@ -44,6 +44,7 @@ export const programs = mysqlTable(
     id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     slug: varchar("slug", { length: 256 }).notNull(),
     ownerId: varchar("ownerId", { length: 255 }).notNull(),
+    name: varchar("name", { length: 256 }).notNull().default(""),
     fileUploadName: varchar("fileUploadName", { length: 256 }).notNull(),
     fileUploadId: varchar("fileUploadId", { length: 256 }).notNull(),
     createdAt: timestamp("created_at")

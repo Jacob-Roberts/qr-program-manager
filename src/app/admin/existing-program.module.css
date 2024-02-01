@@ -1,0 +1,8 @@
+.customLabel {
+  min-height: 1.42857em;
+  padding-block: var(--ds-space-100, 8px);
+  padding-inline: var(--ds-space-075, 6px);
+  font-size: 14px;
+  line-height: 1.42857;
+  word-break: break-word;
+}

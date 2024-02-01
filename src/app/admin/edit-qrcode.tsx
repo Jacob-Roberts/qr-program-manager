@@ -1,16 +1,11 @@
 import { AddNewProgram } from "./add-new-program";
-import { ExistingProgramCard } from "./existing-program";
-
-type QRProgram = {
-  id: number;
-  slug: string;
-  uploadedFileName: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import {
+  ExistingProgramCard,
+  type ExistingProgramCardProps,
+} from "./existing-program";
 
 type EditQRCodeProps = {
-  cards: QRProgram[];
+  cards: ExistingProgramCardProps[];
 };
 
 export function EditQRCode({ cards }: EditQRCodeProps) {

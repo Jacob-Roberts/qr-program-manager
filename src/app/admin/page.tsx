@@ -9,6 +9,7 @@ export default async function AdminPage() {
   const cards = (await api.program.getPrograms.query()).map(card => ({
     id: card.id,
     slug: card.slug,
+    name: card.name,
     createdAt: formatDate(card.createdAt),
     updatedAt: formatDate(card.updatedAt),
     uploadedFileName: card.fileUploadName,

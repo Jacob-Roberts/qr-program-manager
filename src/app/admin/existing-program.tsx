@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./existing-program.module.css";
+
 import { Icon } from "#/components/Icon";
 import { LoadingSpinner } from "#/components/loading-spinner";
 import { Button } from "#/components/ui/button";
@@ -11,19 +13,22 @@ import {
   CardHeader,
   CardTitle,
 } from "#/components/ui/card";
+import { Input } from "#/components/ui/input";
 import { env } from "#/env";
 import { useDoubleCheck } from "#/lib/client-utils";
 import { cn } from "#/lib/utils";
 import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
+import InlineEdit from "@atlaskit/inline-edit";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState, useTransition } from "react";
 
-type ExistingProgramCardProps = {
+export type ExistingProgramCardProps = {
   id: number;
   slug: string;
+  name: string;
   uploadedFileName: string;
   createdAt: string;
   updatedAt: string;
@@ -50,18 +55,95 @@ export function ExistingProgramCard({
 
   const loading = deleteProgramMutation.isLoading || isLoading;
 
+  const utils = api.useUtils();
+  const changeNameMutation = api.program.changeName.useMutation({
+    // onMutate: async ({ id, name }) => {
+    //   // Cancel any outgoing refetches
+    //   // (so they don't overwrite our optimistic update)
+    //   await utils.program.getPrograms.cancel();
+    //   // Snapshot the previous value
+    //   const previousProgram = utils.program.getPrograms.getData();
+    //   // Optimistically update to the new value
+    //   utils.todo.findAll.setData(
+    //     undefined,
+    //     (oldQueryData: TodoWithUser[] | undefined) =>
+    //       [
+    //         ...(oldQueryData ?? []),
+    //         {
+    //           author: {
+    //             name: session?.user?.name,
+    //             id: session?.user?.id,
+    //           },
+    //           content: newTodo.content,
+    //           done: false,
+    //           createdAt: new Date(),
+    //           updatedAt: new Date(),
+    //         },
+    //       ] as TodoWithUser[],
+    //   );
+    //   // Return a context object with the snapshotted value
+    //   return { previousTodos };
+    // },
+    // onError: (err, _newTodo, context) => {
+    //   // Rollback to the previous value if mutation fails
+    //   utils.todo.findAll.setData(undefined, context?.previousTodos);
+    // },
+    // onSuccess: () => {
+    //   console.log("inside onSuccess");
+    // },
+    // onSettled: () => {
+    //   void utils.todo.findAll.invalidate();
+    // },
+  });
+
   const canvasID = `${card.id.toString()}-qr-canvas`;
 
   return (
     <Card key={card.id} className="mx-auto flex w-full flex-col sm:w-96">
       <CardHeader>
-        <CardTitle>{card.uploadedFileName}</CardTitle>
+        <CardTitle className="tracking-normal">
+          <InlineEdit
+            isRequired
+            defaultValue={card.name}
+            editView={({ errorMessage, ...fieldProps }) => (
+              <Input className={"h-10"} {...fieldProps} />
+            )}
+            readView={() => (
+              <Label
+                className={cn(
+                  styles.customLabel,
+                  "ml-1 flex max-w-full px-3 py-2 text-sm hover:cursor-text dark:text-white  dark:hover:text-slate-900",
+                )}
+              >
+                {card.name}
+              </Label>
+            )}
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            onConfirm={value => {
+              if (typeof value === "string" && value !== "") {
+                changeNameMutation.mutate(
+                  {
+                    id: card.id,
+                    name: value,
+                  },
+                  {
+                    onSuccess: () => {
+                      router.refresh();
+                    },
+                  },
+                );
+              }
+            }}
+          />
+        </CardTitle>
         <CardDescription>Created {card.createdAt}</CardDescription>
         <CardDescription>Updated {card.updatedAt}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-grow flex-col gap-4">
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label className="flex justify-center text-xl">Replace File</Label>
+          <Label className="flex justify-center text-xl">
+            {card.uploadedFileName}
+          </Label>
           {loading ? (
             // Dummy button to keep the layout the same
             <div className="flex flex-col items-center justify-center gap-1">

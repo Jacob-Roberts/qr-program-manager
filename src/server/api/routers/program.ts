@@ -15,6 +15,22 @@ export const programRouter = createTRPCRouter({
     });
   }),
 
+  changeName: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(programs)
+        .set({
+          name: input.name,
+        })
+        .where(eq(programs.id, input.id));
+    }),
+
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
@@ -30,6 +46,7 @@ export const programRouter = createTRPCRouter({
   addProgram: protectedProcedure.mutation(async ({ ctx }) => {
     await ctx.db.insert(programs).values({
       slug: createSlug("program"),
+      name: "untitled program",
       ownerId: ctx.session.user.id,
       fileUploadId: "not-uploaded-yet",
       fileUploadName: "No file uploaded yet",
