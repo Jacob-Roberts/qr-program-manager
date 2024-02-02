@@ -19,6 +19,7 @@ import { useDoubleCheck } from "#/lib/client-utils";
 import { cn } from "#/lib/utils";
 import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
+// import { InlineEdit } from "#/components/ui/inline-edit";
 import InlineEdit from "@atlaskit/inline-edit";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
