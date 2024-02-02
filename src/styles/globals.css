@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --ds-space-100: 0;
+  --ds-space-075: 0;
+}

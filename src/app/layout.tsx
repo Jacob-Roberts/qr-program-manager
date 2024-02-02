@@ -4,6 +4,7 @@ import { ourFileRouter } from "#/app/api/uploadthing/core";
 import { TailwindIndicator } from "#/components/tailwind-indicator";
 import { env } from "#/env";
 import { TRPCReactProvider } from "#/trpc/react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { Inter } from "next/font/google";
 import { extractRouterConfig } from "uploadthing/server";
@@ -38,7 +39,10 @@ export default function RootLayout({
            */
           routerConfig={extractRouterConfig(ourFileRouter)}
         />
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </TRPCReactProvider>
         <TailwindIndicator />
       </body>
     </html>

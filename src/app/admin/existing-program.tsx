@@ -41,6 +41,7 @@ export function ExistingProgramCard({
 }) {
   const router = useRouter();
   const [isLoading, startTransition] = useTransition();
+  const [isChangingName, startTransitionChangingName] = useTransition();
   const dc = useDoubleCheck();
 
   const [error, setError] = useState<string | null>(null);
@@ -55,46 +56,55 @@ export function ExistingProgramCard({
 
   const loading = deleteProgramMutation.isLoading || isLoading;
 
-  const utils = api.useUtils();
+  // const utils = api.useUtils();
   const changeNameMutation = api.program.changeName.useMutation({
-    // onMutate: async ({ id, name }) => {
-    //   // Cancel any outgoing refetches
-    //   // (so they don't overwrite our optimistic update)
-    //   await utils.program.getPrograms.cancel();
-    //   // Snapshot the previous value
-    //   const previousProgram = utils.program.getPrograms.getData();
-    //   // Optimistically update to the new value
-    //   utils.todo.findAll.setData(
-    //     undefined,
-    //     (oldQueryData: TodoWithUser[] | undefined) =>
-    //       [
-    //         ...(oldQueryData ?? []),
-    //         {
-    //           author: {
-    //             name: session?.user?.name,
-    //             id: session?.user?.id,
-    //           },
-    //           content: newTodo.content,
-    //           done: false,
-    //           createdAt: new Date(),
-    //           updatedAt: new Date(),
-    //         },
-    //       ] as TodoWithUser[],
-    //   );
-    //   // Return a context object with the snapshotted value
-    //   return { previousTodos };
-    // },
-    // onError: (err, _newTodo, context) => {
-    //   // Rollback to the previous value if mutation fails
-    //   utils.todo.findAll.setData(undefined, context?.previousTodos);
-    // },
-    // onSuccess: () => {
-    //   console.log("inside onSuccess");
-    // },
-    // onSettled: () => {
-    //   void utils.todo.findAll.invalidate();
-    // },
+    onSuccess: () => {
+      startTransitionChangingName(() => {
+        router.refresh();
+      });
+    },
   });
+  // {
+  //   onMutate: async ({ id, name }) => {
+  //     // Cancel any outgoing refetches
+  //     // (so they don't overwrite our optimistic update)
+  //     await utils.program.getPrograms.cancel();
+
+  //     // Snapshot the previous value
+  //     const previousPrograms = utils.program.getPrograms.getData();
+
+  //     debugger;
+
+  //     // Optimistically update to the new value
+  //     utils.program.getPrograms.setData(undefined, prevPrograms => {
+  //       debugger;
+  //       if (!prevPrograms) return;
+  //       debugger;
+  //       return prevPrograms.map(program => {
+  //         if (program.id === id) {
+  //           return {
+  //             ...program,
+  //             name,
+  //           };
+  //         }
+  //         return program;
+  //       });
+  //     });
+
+  //     // Return a context with the previous and new values
+  //     return { previousPrograms };
+  //   },
+  //   // If the mutation fails, use the context to roll back
+  //   onError: (err, variables, context) => {
+  //     if (context?.previousPrograms) {
+  //       utils.program.getPrograms.setData(undefined, context.previousPrograms);
+  //     }
+  //   },
+  //   // Always refetch after error or success:
+  //   onSettled: () => {
+  //     void utils.program.getPrograms.invalidate();
+  //   },
+  // });
 
   const canvasID = `${card.id.toString()}-qr-canvas`;
 
@@ -105,33 +115,52 @@ export function ExistingProgramCard({
           <InlineEdit
             isRequired
             defaultValue={card.name}
-            editView={({ errorMessage, ...fieldProps }) => (
-              <Input className={"h-10"} {...fieldProps} />
+            editView={(
+              {
+                id,
+                value,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                errorMessage,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                isRequired,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                isInvalid,
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                isDisabled,
+                ...rest
+              },
+              ref,
+            ) => (
+              <Input
+                ref={ref}
+                className={"mb-2 mt-[6px] h-10 text-2xl"}
+                value={value}
+                id={id}
+                disabled={isChangingName}
+                {...rest}
+              />
             )}
             readView={() => (
               <Label
                 className={cn(
                   styles.customLabel,
-                  "ml-1 flex max-w-full px-3 py-2 text-sm hover:cursor-text dark:text-white  dark:hover:text-slate-900",
+                  "ml-1 flex min-h-7 max-w-full border border-transparent px-3 py-2 text-2xl hover:cursor-text dark:text-white  dark:hover:text-slate-900",
                 )}
               >
-                {card.name}
+                {card.name} {isChangingName ? <LoadingSpinner /> : null}
               </Label>
             )}
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             onConfirm={value => {
-              if (typeof value === "string" && value !== "") {
-                changeNameMutation.mutate(
-                  {
-                    id: card.id,
-                    name: value,
-                  },
-                  {
-                    onSuccess: () => {
-                      router.refresh();
-                    },
-                  },
-                );
+              if (
+                typeof value === "string" &&
+                value !== "" &&
+                value !== card.name &&
+                !isChangingName
+              ) {
+                changeNameMutation.mutate({
+                  id: card.id,
+                  name: value,
+                });
               }
             }}
           />
@@ -153,6 +182,13 @@ export function ExistingProgramCard({
               >
                 Choose File
               </button>
+              <div
+                className="h-[1.25rem] text-xs leading-5 text-gray-600"
+                data-state="ready"
+                data-ut-element="allowed-content"
+              >
+                Pdf (4MB)
+              </div>
             </div>
           ) : (
             <UploadButton
