@@ -13,14 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "#/components/ui/card";
+import { InlineEdit } from "#/components/ui/inline-edit";
 import { Input } from "#/components/ui/input";
 import { env } from "#/env";
 import { useDoubleCheck } from "#/lib/client-utils";
 import { cn } from "#/lib/utils";
 import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
-// import { InlineEdit } from "#/components/ui/inline-edit";
-import InlineEdit from "@atlaskit/inline-edit";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
@@ -108,7 +107,6 @@ export function ExistingProgramCard({
   // });
 
   const canvasID = `${card.id.toString()}-qr-canvas`;
-
   return (
     <Card key={card.id} className="mx-auto flex w-full flex-col sm:w-96">
       <CardHeader>
@@ -116,30 +114,20 @@ export function ExistingProgramCard({
           <InlineEdit
             isRequired
             defaultValue={card.name}
-            editView={(
-              {
-                id,
-                value,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                errorMessage,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                isRequired,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                isInvalid,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                isDisabled,
-                ...rest
-              },
-              ref,
-            ) => (
-              <Input
-                ref={ref}
-                className={"mb-2 mt-[6px] h-10 text-2xl"}
-                value={value}
-                id={id}
-                disabled={isChangingName}
-                {...rest}
-              />
+            onCancel={() => console.log("cancel")}
+            editView={({ disabled, errorMessage, isInvalid, ...rest }, ref) => (
+              <>
+                <Input
+                  ref={ref}
+                  className={cn("mb-2 mt-[6px] h-10 text-2xl")}
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  disabled={disabled || isChangingName}
+                  {...rest}
+                />
+                {isInvalid && errorMessage ? (
+                  <span className="text-red-500">{errorMessage}</span>
+                ) : null}
+              </>
             )}
             readView={() => (
               <Label
@@ -151,7 +139,9 @@ export function ExistingProgramCard({
                 {card.name} {isChangingName ? <LoadingSpinner /> : null}
               </Label>
             )}
+            onEdit={() => console.log("Edit")}
             onConfirm={value => {
+              console.log("confirm", value);
               if (
                 typeof value === "string" &&
                 value !== "" &&
