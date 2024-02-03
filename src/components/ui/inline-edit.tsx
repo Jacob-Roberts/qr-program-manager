@@ -5,10 +5,14 @@ import styles from "./inline-edit.module.css";
 import { Icon } from "#/components/Icon";
 import { Button } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-
-// TODO:
 
 type InlineEditProps = {
   startWithEditViewOpen?: boolean;
@@ -95,9 +99,7 @@ const InlineEdit = ({
       setEditingState(true);
     }
     providedOnEdit();
-    console.log("JAKE", shouldBeEditing);
     if (shouldBeEditing && editViewRef.current) {
-      console.log("JAKE");
       editViewRef.current.focus();
     }
   }, [isControlled, shouldBeEditing, editViewRef, providedOnEdit]);
@@ -120,18 +122,14 @@ const InlineEdit = ({
   const tryAutoSubmitWhenBlur = useCallback(
     (
       isFieldInvalid: boolean,
-      onSubmit: (e?: React.FormEvent<HTMLFormElement>) => void,
-      formRef: React.RefObject<HTMLFormElement>,
+      onSubmit: (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        e?: React.BaseSyntheticEvent<object, any, any> | undefined,
+      ) => Promise<void>,
     ) => {
-      if (
-        !isFieldInvalid &&
-        !wasFocusReceivedSinceLastBlurRef.current &&
-        formRef.current
-      ) {
+      if (!isFieldInvalid && !wasFocusReceivedSinceLastBlurRef.current) {
         doNotFocusOnEditButton();
-        if (formRef.current.checkValidity()) {
-          onSubmit();
-        }
+        void onSubmit();
       }
     },
     [doNotFocusOnEditButton],
@@ -153,13 +151,15 @@ const InlineEdit = ({
   const onEditViewWrapperBlur = useCallback(
     (
       isFieldInvalid: boolean,
-      onSubmit: (e?: React.FormEvent<HTMLFormElement>) => void,
-      formRef: React.RefObject<HTMLFormElement>,
+      onSubmit: (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        e?: React.BaseSyntheticEvent<object, any, any> | undefined,
+      ) => Promise<void>,
     ) => {
       if (!keepEditViewOpenOnBlur) {
         wasFocusReceivedSinceLastBlurRef.current = false;
         timerRef.current = setTimeout(
-          () => tryAutoSubmitWhenBlur(isFieldInvalid, onSubmit, formRef),
+          () => tryAutoSubmitWhenBlur(isFieldInvalid, onSubmit),
           0,
         );
       }
@@ -184,14 +184,18 @@ const InlineEdit = ({
       inlineEdit: defaultValue ?? "",
     },
   });
+
   const onSubmit: SubmitHandler<FormInputs> = data =>
     onConfirm(data.inlineEdit);
 
+  const registerReturn = register("inlineEdit", {
+    required: isRequired,
+    validate: validate,
+  });
+  // Share a ref between the register func and the editViewRef
+  useImperativeHandle(registerReturn.ref, () => editViewRef.current);
+
   if (shouldBeEditing) {
-    const registerReturn = register("inlineEdit", {
-      required: isRequired,
-      validate: validate,
-    });
     return (
       <form
         /**
@@ -211,10 +215,10 @@ const InlineEdit = ({
       >
         <div
           className="relative max-w-full"
-          // onBlur={() => {
-          //   onEditViewWrapperBlur(!formState.isValid, onSubmit, formRef);
-          // }}
-          // onFocus={onEditViewWrapperFocus}
+          onBlur={() => {
+            onEditViewWrapperBlur(!formState.isValid, handleSubmit(onSubmit));
+          }}
+          onFocus={onEditViewWrapperFocus}
         >
           {editView(
             {
@@ -295,7 +299,8 @@ const useButtonFocusHook = (
     if (prevIsEditing && !shouldBeEditing) {
       if (preventFocusOnEditButtonRef && preventFocusOnEditButtonRef.current) {
         preventFocusOnEditButtonRef.current = false;
-      } else if (editButtonRef?.current) {
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+      } else if (editButtonRef && editButtonRef.current) {
         editButtonRef.current.focus();
       }
     }

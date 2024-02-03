@@ -115,14 +115,39 @@ export function ExistingProgramCard({
             isRequired
             defaultValue={card.name}
             onCancel={() => console.log("cancel")}
-            editView={({ disabled, errorMessage, isInvalid, ...rest }, ref) => (
+            editView={(
+              {
+                disabled,
+                errorMessage,
+                isInvalid,
+                name,
+                onBlur,
+                onChange,
+                max,
+                maxLength,
+                min,
+                minLength,
+                pattern,
+                required,
+              },
+              ref,
+            ) => (
               <>
                 <Input
-                  ref={ref}
-                  className={cn("mb-2 mt-[6px] h-10 text-2xl")}
+                  className="mb-2 mt-[2px] h-10 text-2xl"
+                  type="text"
                   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   disabled={disabled || isChangingName}
-                  {...rest}
+                  name={name}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  max={max}
+                  maxLength={maxLength}
+                  min={min}
+                  minLength={minLength}
+                  pattern={pattern}
+                  required={required}
+                  ref={ref}
                 />
                 {isInvalid && errorMessage ? (
                   <span className="text-red-500">{errorMessage}</span>
