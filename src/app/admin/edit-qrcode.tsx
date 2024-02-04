@@ -1,4 +1,5 @@
 import { get } from "@vercel/edge-config";
+import { unstable_noStore as noStore } from "next/cache";
 
 import { AddNewProgram } from "./add-new-program";
 import {
@@ -11,7 +12,10 @@ type EditQRCodeProps = {
 };
 
 export async function EditQRCode({ cards }: EditQRCodeProps) {
+  noStore();
+
   const enableShareWithFriends = Boolean(await get("enableShareWithFriends"));
+
   return (
     <main className="flex-1 p-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
