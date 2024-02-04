@@ -18,7 +18,7 @@ export const metadata = {
   title: "QR Program Manager",
   description:
     "Create a QR code for anything, and manage the content behind it. No app required.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/icon.svg" }],
   metadataBase: env.NEXT_PUBLIC_DEPLOY_URL,
 };
 
