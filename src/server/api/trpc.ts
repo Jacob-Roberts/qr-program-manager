@@ -8,6 +8,7 @@
  */
 import { getServerAuthSession } from "#/server/auth";
 import { db } from "#/server/db";
+import { resend } from "#/server/email/resend";
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
@@ -29,6 +30,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
   return {
     db,
+    emailClient: resend,
     session,
     ...opts,
   };

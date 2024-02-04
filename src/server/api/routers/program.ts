@@ -3,8 +3,9 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "#/server/api/trpc";
-import { programs } from "#/server/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { programShareInvites, programs } from "#/server/db/schema";
+import { EmailTemplate } from "#/server/email/email-template";
+import { and, asc, eq } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
 import { z } from "zod";
 
@@ -59,6 +60,63 @@ export const programRouter = createTRPCRouter({
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
       await ctx.db.delete(programs).where(eq(programs.id, input));
+    }),
+
+  shareProgram: protectedProcedure
+    .input(
+      z.object({
+        programId: z.number(),
+        email: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.insert(programShareInvites).values({
+        programId: input.programId,
+        email: input.email,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      try {
+        const { data, error } = await ctx.emailClient.emails.send({
+          from: "Acme <onboarding@resend.dev>",
+          to: [input.email],
+          subject: "Hello world",
+          react: EmailTemplate({ firstName: "John" }) as React.ReactElement,
+        });
+
+        if (error) {
+          throw error;
+        }
+        return data;
+      } catch (error) {
+        console.log("Error sending email", error);
+        // Rollback the insert
+        await ctx.db
+          .delete(programShareInvites)
+          .where(
+            and(
+              eq(programShareInvites.programId, input.programId),
+              eq(programShareInvites.email, input.email),
+            ),
+          );
+      }
+    }),
+
+  unshareProgram: protectedProcedure
+    .input(
+      z.object({
+        programId: z.number(),
+        email: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // TODO:
+      // await ctx.db
+      //   .update(programs)
+      //   .set({
+      //     sharedWith: ctx.db.raw(`array_remove(shared_with, '${input.email}')`),
+      //   })
+      //   .where(eq(programs.id, input.programId));
     }),
 });
 

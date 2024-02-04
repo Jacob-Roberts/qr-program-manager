@@ -25,6 +25,8 @@ import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState, useTransition } from "react";
 
+// import ShareWithFriends from "./share";
+
 export type ExistingProgramCardProps = {
   id: number;
   slug: string;
@@ -258,6 +260,7 @@ export function ExistingProgramCard({
         >
           <Icon name="download" />
         </Button>
+        {/* <ShareWithFriends programId={card.id} /> */}
         <Button
           {...dc.getButtonProps({
             type: "button",

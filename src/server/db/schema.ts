@@ -57,10 +57,25 @@ export const programs = mysqlTable(
   }),
 );
 
+export const programShareInvites = mysqlTable(
+  "programShareInvite",
+  {
+    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    programId: bigint("programId", { mode: "number" }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
+  },
+  table => ({
+    programIdIdx: index("programId_idx").on(table.programId),
+  }),
+);
+
 export const programsShares = mysqlTable(
   "programShare",
   {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     programId: bigint("programId", { mode: "number" }).notNull(),
     userId: varchar("userId", { length: 255 }).notNull(),
     createdAt: timestamp("created_at")
@@ -68,9 +83,10 @@ export const programsShares = mysqlTable(
       .notNull(),
     updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
   },
-  example => ({
-    programIdIdx: index("programId_idx").on(example.programId),
-    userIdIdx: index("userId_idx").on(example.userId),
+  table => ({
+    pk: primaryKey({ columns: [table.programId, table.userId] }),
+    programIdIdx: index("programId_idx").on(table.programId),
+    userIdIdx: index("userId_idx").on(table.userId),
   }),
 );
 
