@@ -1,5 +1,6 @@
 "use client";
 
+import { LoadingSpinner } from "#/components/loading-spinner";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -14,9 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 import { Button } from "#/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,17 +33,9 @@ import { Input } from "#/components/ui/input";
 import { useDoubleCheck } from "#/lib/client-utils";
 import { api } from "#/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-const SharedWith = [
-  {
-    id: "1",
-    email: "shadcn@gmail.com",
-    profileImage: "https://github.com/shadcn.png",
-  },
-];
 
 type ShareWithFriendsProps = {
   programId: number;
@@ -56,10 +47,12 @@ const formSchema = z.object({
 
 export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
   const dc = useDoubleCheck();
-  const [loading, setLoading] = React.useState(false);
 
+  const sharesQuery = api.program.shares.useQuery({ programId: programId });
   const unshareProgramMutation = api.program.unshareProgram.useMutation();
   const shareProgramMutation = api.program.shareProgram.useMutation();
+
+  const [unshareRefetching, setUnshareRefetching] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,11 +63,15 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
+    if (shareProgramMutation.isLoading) return;
+
     shareProgramMutation.mutate({
       email: values.email,
       programId: programId,
     });
   }
+
+  const shareLoading = shareProgramMutation.isLoading;
 
   return (
     <Dialog>
@@ -83,7 +80,7 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
           Share Document
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-xl text-black dark:text-white">
             Share Document
@@ -108,7 +105,9 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Share</Button>
+              <Button type="submit" disabled={shareLoading}>
+                Share {shareLoading && <LoadingSpinner className="ml-2" />}
+              </Button>
             </form>
           </Form>
         </div>
@@ -116,67 +115,66 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
           <h2 className="text-md font-semibold text-gray-900 dark:text-gray-50">
             People with Access
           </h2>
-          {SharedWith.map(person => (
-            <div className="flex flex-row gap-4" key={person.id}>
+          {sharesQuery.isLoading && <LoadingSpinner />}
+          {sharesQuery.error && (
+            <p className="text-red-500 dark:text-red-400">
+              {sharesQuery.error.message}
+            </p>
+          )}
+          {sharesQuery.data?.length === 0 && (
+            <p className="text-gray-500 dark:text-gray-400">
+              No one has access to this document yet
+            </p>
+          )}
+          {sharesQuery.data?.map(share => (
+            <div
+              className="flex flex-row gap-4"
+              key={`${share.programShare.programId}_${share.programShare.userId}`}
+            >
               <Avatar>
-                <AvatarImage src={person.profileImage} />
-                <AvatarFallback>{person.email[0]}</AvatarFallback>
+                <AvatarImage src={share.user?.image ?? undefined} />
+                <AvatarFallback>
+                  {share.user?.name?.[0] ?? share.user?.email?.[0] ?? null}
+                </AvatarFallback>
               </Avatar>
               <div className="mr-auto flex flex-shrink flex-grow basis-0 flex-col">
                 <p className="text-gray-900 dark:text-gray-50">
-                  {person.email}
+                  {share.user?.email}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   Can edit
                 </p>
               </div>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    {...dc.getButtonProps({
-                      type: "button",
-                      value: "Remove",
-                      onClick: () => {
-                        if (loading) return;
-                        if (dc.doubleCheck) {
-                          unshareProgramMutation.mutate({
-                            programId: programId,
-                            email: person.email,
-                          });
-                        }
-                      },
-                    })}
-                    variant={dc.doubleCheck ? "destructive" : "secondary"}
-                  >
-                    {dc.doubleCheck ? "Are you sure?" : "Remove"}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="text-black dark:text-white">
-                      Success!
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This program is no longer shared with Shad.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter className="sm:justify-start">
-                    <AlertDialogCancel className="text-black dark:text-white">
-                      Close
-                    </AlertDialogCancel>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <Button
+                {...dc.getButtonProps({
+                  type: "button",
+                  value: "Remove",
+                  onClick: () => {
+                    if (unshareProgramMutation.isLoading || unshareRefetching)
+                      return;
+                    if (dc.doubleCheck) {
+                      async function removeShare() {
+                        setUnshareRefetching(true);
+                        await unshareProgramMutation.mutateAsync({
+                          programId: programId,
+                          userId: share.programShare.userId,
+                        });
+                        await sharesQuery.refetch();
+                        setUnshareRefetching(false);
+                      }
+                      void removeShare();
+                    }
+                  },
+                  disabled: unshareProgramMutation.isLoading,
+                })}
+                variant={dc.doubleCheck ? "destructive" : "secondary"}
+              >
+                {dc.doubleCheck ? "Are you sure?" : "Remove"}{" "}
+                {unshareRefetching && <LoadingSpinner className="ml-2" />}
+              </Button>
             </div>
           ))}
         </div>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
-        </DialogFooter>
       </DialogContent>
       <AlertDialog>
         <AlertDialogTrigger asChild>

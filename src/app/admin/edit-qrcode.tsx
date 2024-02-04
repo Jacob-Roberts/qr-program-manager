@@ -14,7 +14,9 @@ type EditQRCodeProps = {
 export async function EditQRCode({ cards }: EditQRCodeProps) {
   noStore();
 
-  const enableShareWithFriends = Boolean(await get("enableShareWithFriends"));
+  const enableShareWithFriends =
+    Boolean(await get("enableShareWithFriends")) ||
+    Boolean(process.env.OVERRIDE_ENABLE_SHARE_WITH_FRIENDS);
 
   return (
     <main className="flex-1 p-6">

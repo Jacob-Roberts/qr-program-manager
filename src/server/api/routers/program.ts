@@ -3,7 +3,12 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "#/server/api/trpc";
-import { programShareInvites, programs } from "#/server/db/schema";
+import {
+  programShareInvites,
+  programs,
+  programsShares,
+  users,
+} from "#/server/db/schema";
 import { EmailTemplate } from "#/server/email/email-template";
 import { and, asc, eq } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
@@ -62,6 +67,16 @@ export const programRouter = createTRPCRouter({
       await ctx.db.delete(programs).where(eq(programs.id, input));
     }),
 
+  shares: protectedProcedure
+    .input(z.object({ programId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db
+        .select()
+        .from(programsShares)
+        .where(eq(programsShares.programId, input.programId))
+        .leftJoin(users, eq(users.id, programsShares.userId));
+    }),
+
   shareProgram: protectedProcedure
     .input(
       z.object({
@@ -106,17 +121,18 @@ export const programRouter = createTRPCRouter({
     .input(
       z.object({
         programId: z.number(),
-        email: z.string(),
+        userId: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // TODO:
-      // await ctx.db
-      //   .update(programs)
-      //   .set({
-      //     sharedWith: ctx.db.raw(`array_remove(shared_with, '${input.email}')`),
-      //   })
-      //   .where(eq(programs.id, input.programId));
+      await ctx.db
+        .delete(programsShares)
+        .where(
+          and(
+            eq(programsShares.programId, input.programId),
+            eq(programsShares.userId, input.userId),
+          ),
+        );
     }),
 });
 
