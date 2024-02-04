@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
 import { useState, useTransition } from "react";
 
-// import ShareWithFriends from "./share";
+import ShareWithFriends from "./share";
 
 export type ExistingProgramCardProps = {
   id: number;
@@ -38,8 +38,10 @@ export type ExistingProgramCardProps = {
 
 export function ExistingProgramCard({
   card,
+  enableShareWithFriends,
 }: {
   card: ExistingProgramCardProps;
+  enableShareWithFriends: boolean;
 }) {
   const router = useRouter();
   const [isLoading, startTransition] = useTransition();
@@ -260,7 +262,9 @@ export function ExistingProgramCard({
         >
           <Icon name="download" />
         </Button>
-        {/* <ShareWithFriends programId={card.id} /> */}
+        {enableShareWithFriends ? (
+          <ShareWithFriends programId={card.id} />
+        ) : null}
         <Button
           {...dc.getButtonProps({
             type: "button",

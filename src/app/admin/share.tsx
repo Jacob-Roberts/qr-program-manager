@@ -21,11 +21,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "#/components/ui/form";
 import { Input } from "#/components/ui/input";
 import { useDoubleCheck } from "#/lib/client-utils";
 import { api } from "#/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const SharedWith = [
   {
@@ -39,9 +50,9 @@ type ShareWithFriendsProps = {
   programId: number;
 };
 
-type FormData = {
-  email: string;
-};
+const formSchema = z.object({
+  email: z.string().email("Email is invalid"),
+});
 
 export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
   const dc = useDoubleCheck();
@@ -50,14 +61,20 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
   const unshareProgramMutation = api.program.unshareProgram.useMutation();
   const shareProgramMutation = api.program.shareProgram.useMutation();
 
-  const { register, formState, handleSubmit } = useForm<FormData>();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
 
-  const onSubmit = (data: FormData) => {
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
     shareProgramMutation.mutate({
-      email: data.email,
+      email: values.email,
       programId: programId,
     });
-  };
+  }
 
   return (
     <Dialog>
@@ -72,27 +89,28 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
             Share Document
           </DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Input
-              autoFocus
-              className="col-span-4 text-black dark:text-white"
-              id="email"
-              {...register("email", {
-                required: true,
-                pattern: {
-                  value: /\S+@\S+\.\S+/,
-                  message: "Entered value does not match email format",
-                },
-              })}
-              placeholder="Add people you want to share this document with"
-            />
-            {formState.errors.email && (
-              <p className="text-red-500 dark:text-red-400">
-                {formState.errors.email.message}
-              </p>
-            )}
-          </form>
+        <div className="grid gap-4 py-4 text-black dark:text-white">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john.doe@example.com" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Add people you want to share this document with
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">Share</Button>
+            </form>
+          </Form>
         </div>
         <div className="grid gap-4 py-4">
           <h2 className="text-md font-semibold text-gray-900 dark:text-gray-50">
@@ -128,7 +146,7 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
                         }
                       },
                     })}
-                    variant="destructive"
+                    variant={dc.doubleCheck ? "destructive" : "secondary"}
                   >
                     {dc.doubleCheck ? "Are you sure?" : "Remove"}
                   </Button>
@@ -142,7 +160,7 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
                       This program is no longer shared with Shad.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  <AlertDialogFooter>
+                  <AlertDialogFooter className="sm:justify-start">
                     <AlertDialogCancel className="text-black dark:text-white">
                       Close
                     </AlertDialogCancel>
