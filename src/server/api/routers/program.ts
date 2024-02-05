@@ -1,3 +1,4 @@
+import { env } from "#/env";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -9,7 +10,7 @@ import {
   programsShares,
   users,
 } from "#/server/db/schema";
-import { EmailTemplate } from "#/server/email/email-template";
+import InviteUserEmail from "#/server/email/invite-user";
 import { and, asc, eq } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
 import { z } from "zod";
@@ -68,7 +69,7 @@ export const programRouter = createTRPCRouter({
   shares: protectedProcedure
     .input(z.object({ programId: z.number() }))
     .query(async ({ ctx, input }) => {
-      const sharesAndUsersPromise = ctx.db
+      const sharesAndUsers = await ctx.db
         .select({
           programId: programsShares.programId,
           userId: programsShares.userId,
@@ -79,7 +80,7 @@ export const programRouter = createTRPCRouter({
         .from(programsShares)
         .where(eq(programsShares.programId, input.programId))
         .leftJoin(users, eq(users.id, programsShares.userId));
-      const invitesAndUsersPromise = ctx.db
+      const invitesAndUsers = await ctx.db
         .select({
           programId: programShareInvites.programId,
           email: programShareInvites.email,
@@ -87,10 +88,6 @@ export const programRouter = createTRPCRouter({
         .from(programShareInvites)
         .where(eq(programShareInvites.programId, input.programId));
 
-      const [sharesAndUsers, invitesAndUsers] = await Promise.all([
-        sharesAndUsersPromise,
-        invitesAndUsersPromise,
-      ]);
       return {
         shares: sharesAndUsers,
         invites: invitesAndUsers,
@@ -105,7 +102,36 @@ export const programRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // First see if we can immediately add the share
+      const user = await ctx.db
+        .select()
+        .from(users)
+        .where(eq(users.email, input.email))
+        .limit(1);
+      if (user.length > 0 && typeof user[0] !== "undefined") {
+        await ctx.db.insert(programsShares).values({
+          programId: input.programId,
+          userId: user[0].id,
+        });
+        return null;
+      }
+
+      // If we didn't find a user, then invite them
       const inviteToken = createInviteToken(40);
+
+      // find the program name
+      const program = await ctx.db
+        .select({
+          name: programs.name,
+          id: programs.id,
+        })
+        .from(programs)
+        .where(eq(programs.id, input.programId))
+        .limit(1);
+      if (program.length === 0 || typeof program[0] === "undefined") {
+        throw new Error("not found");
+      }
+
       await ctx.db.insert(programShareInvites).values({
         programId: input.programId,
         email: input.email,
@@ -122,10 +148,13 @@ export const programRouter = createTRPCRouter({
           from: "Acme <onboarding@resend.dev>",
           to: [input.email],
           subject: "Hello world",
-          react: EmailTemplate({
-            firstName: "John",
-            inviteToken: inviteToken,
-            programId: input.programId,
+          react: InviteUserEmail({
+            username: input.email,
+            invitedByEmail: ctx.session.user.email ?? undefined,
+            invitedByUsername: ctx.session.user.name ?? undefined,
+            userImage: ctx.session.user.image ?? undefined,
+            inviteLink: `${env.NEXT_PUBLIC_DEPLOY_URL}/accept-share?programId=${input.programId}&token=${inviteToken}`,
+            programName: program[0].name,
           }) as React.ReactElement,
         });
 

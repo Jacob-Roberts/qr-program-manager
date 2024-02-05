@@ -59,21 +59,21 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     if (shareProgramMutation.isLoading) return;
 
     setMutationLoading(true);
 
-    shareProgramMutation.mutate({
+    await shareProgramMutation.mutateAsync({
       email: values.email,
       programId: programId,
     });
 
     form.resetField("email");
 
-    void sharesQuery.refetch().then(() => {
-      setMutationLoading(false);
-    });
+    await sharesQuery.refetch();
+
+    setMutationLoading(false);
   }
 
   const shareLoading = shareProgramMutation.isLoading || mutationLoading;
@@ -97,15 +97,6 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
               <FormField
                 control={form.control}
                 name="email"
-                rules={{
-                  validate: value => {
-                    if (
-                      sharesQuery.data?.shares.some(s => s.userEmail === value)
-                    ) {
-                      return "This person already has access to this document";
-                    }
-                  },
-                }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
