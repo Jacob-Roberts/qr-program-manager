@@ -41,7 +41,7 @@ export default function RootLayout({
         />
         <TRPCReactProvider>
           {children}
-          <ReactQueryDevtools initialIsOpen={false} />
+          <ReactQueryDevtools position="bottom-right" initialIsOpen={false} />
         </TRPCReactProvider>
         <TailwindIndicator />
       </body>

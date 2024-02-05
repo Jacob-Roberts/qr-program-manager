@@ -30,7 +30,10 @@ export const posts = mysqlTable(
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").onUpdateNow(),
+    updatedAt: timestamp("updatedAt")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull()
+      .onUpdateNow(),
   },
   example => ({
     createdByIdIdx: index("createdById_idx").on(example.createdById),
@@ -50,7 +53,10 @@ export const programs = mysqlTable(
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
+    updatedAt: timestamp("updatedAt")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull()
+      .onUpdateNow(),
   },
   example => ({
     ownerIdIdx: index("ownerId_idx").on(example.ownerId),
@@ -60,15 +66,19 @@ export const programs = mysqlTable(
 export const programShareInvites = mysqlTable(
   "programShareInvite",
   {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
     programId: bigint("programId", { mode: "number" }).notNull(),
     email: varchar("email", { length: 255 }).notNull(),
+    inviteToken: varchar("inviteToken", { length: 255 }).notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
+    updatedAt: timestamp("updatedAt")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull()
+      .onUpdateNow(),
   },
   table => ({
+    pk: primaryKey({ columns: [table.programId, table.email] }),
     programIdIdx: index("programId_idx").on(table.programId),
   }),
 );
@@ -81,7 +91,10 @@ export const programsShares = mysqlTable(
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updatedAt").notNull().onUpdateNow(),
+    updatedAt: timestamp("updatedAt")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull()
+      .onUpdateNow(),
   },
   table => ({
     pk: primaryKey({ columns: [table.programId, table.userId] }),

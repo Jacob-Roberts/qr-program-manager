@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "#/components/Icon";
 import { LoadingSpinner } from "#/components/loading-spinner";
 import {
   AlertDialog,
@@ -46,13 +47,9 @@ const formSchema = z.object({
 });
 
 export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
-  const dc = useDoubleCheck();
-
   const sharesQuery = api.program.shares.useQuery({ programId: programId });
-  const unshareProgramMutation = api.program.unshareProgram.useMutation();
   const shareProgramMutation = api.program.shareProgram.useMutation();
-
-  const [unshareRefetching, setUnshareRefetching] = useState(false);
+  const [mutationLoading, setMutationLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,13 +62,21 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (shareProgramMutation.isLoading) return;
 
+    setMutationLoading(true);
+
     shareProgramMutation.mutate({
       email: values.email,
       programId: programId,
     });
+
+    form.resetField("email");
+
+    void sharesQuery.refetch().then(() => {
+      setMutationLoading(false);
+    });
   }
 
-  const shareLoading = shareProgramMutation.isLoading;
+  const shareLoading = shareProgramMutation.isLoading || mutationLoading;
 
   return (
     <Dialog>
@@ -92,6 +97,15 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
               <FormField
                 control={form.control}
                 name="email"
+                rules={{
+                  validate: value => {
+                    if (
+                      sharesQuery.data?.shares.some(s => s.userEmail === value)
+                    ) {
+                      return "This person already has access to this document";
+                    }
+                  },
+                }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
@@ -121,58 +135,25 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
               {sharesQuery.error.message}
             </p>
           )}
-          {sharesQuery.data?.length === 0 && (
-            <p className="text-gray-500 dark:text-gray-400">
-              No one has access to this document yet
-            </p>
-          )}
-          {sharesQuery.data?.map(share => (
-            <div
-              className="flex flex-row gap-4"
-              key={`${share.programShare.programId}_${share.programShare.userId}`}
-            >
-              <Avatar>
-                <AvatarImage src={share.user?.image ?? undefined} />
-                <AvatarFallback>
-                  {share.user?.name?.[0] ?? share.user?.email?.[0] ?? null}
-                </AvatarFallback>
-              </Avatar>
-              <div className="mr-auto flex flex-shrink flex-grow basis-0 flex-col">
-                <p className="text-gray-900 dark:text-gray-50">
-                  {share.user?.email}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Can edit
-                </p>
-              </div>
-              <Button
-                {...dc.getButtonProps({
-                  type: "button",
-                  value: "Remove",
-                  onClick: () => {
-                    if (unshareProgramMutation.isLoading || unshareRefetching)
-                      return;
-                    if (dc.doubleCheck) {
-                      async function removeShare() {
-                        setUnshareRefetching(true);
-                        await unshareProgramMutation.mutateAsync({
-                          programId: programId,
-                          userId: share.programShare.userId,
-                        });
-                        await sharesQuery.refetch();
-                        setUnshareRefetching(false);
-                      }
-                      void removeShare();
-                    }
-                  },
-                  disabled: unshareProgramMutation.isLoading,
-                })}
-                variant={dc.doubleCheck ? "destructive" : "secondary"}
-              >
-                {dc.doubleCheck ? "Are you sure?" : "Remove"}{" "}
-                {unshareRefetching && <LoadingSpinner className="ml-2" />}
-              </Button>
-            </div>
+          {sharesQuery.data?.shares.length === 0 &&
+            sharesQuery.data?.invites.length === 0 && (
+              <p className="text-gray-500 dark:text-gray-400">
+                No one has access to this document yet
+              </p>
+            )}
+          {sharesQuery.data?.shares.map(share => (
+            <SharedRow
+              share={share}
+              key={`${share.programId}_${share.userId}`}
+              refetchShare={sharesQuery.refetch}
+            />
+          ))}
+          {sharesQuery.data?.invites.map(invite => (
+            <InvitedRow
+              key={`${invite.programId}_${invite.email}`}
+              invite={invite}
+              refetchInvite={sharesQuery.refetch}
+            />
           ))}
         </div>
       </DialogContent>
@@ -195,5 +176,125 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
         </AlertDialogContent>
       </AlertDialog>
     </Dialog>
+  );
+}
+
+type SharedRowProps = {
+  share: {
+    programId: number;
+    userId: string;
+    userImage: string | null;
+    userName: string | null;
+    userEmail: string | null;
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  refetchShare: () => Promise<any>;
+};
+
+function SharedRow({ share, refetchShare }: SharedRowProps) {
+  const dc = useDoubleCheck();
+
+  const unshareProgramMutation = api.program.unshareProgram.useMutation();
+  const [unshareRefetching, setUnshareRefetching] = useState(false);
+
+  const mutationLoading = unshareProgramMutation.isLoading || unshareRefetching;
+
+  return (
+    <div className="flex flex-row gap-4">
+      <Avatar>
+        <AvatarImage src={share.userImage ?? undefined} />
+        <AvatarFallback>
+          {share.userName?.[0] ?? share.userEmail?.[0] ?? null}
+        </AvatarFallback>
+      </Avatar>
+      <div className="mr-auto flex flex-shrink flex-grow basis-0 flex-col">
+        <p className="text-gray-900 dark:text-gray-50">{share.userEmail}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">Can edit</p>
+      </div>
+      <Button
+        {...dc.getButtonProps({
+          type: "button",
+          value: "Remove",
+          onClick: () => {
+            if (mutationLoading) return;
+            if (dc.doubleCheck) {
+              async function removeShare() {
+                setUnshareRefetching(true);
+                await unshareProgramMutation.mutateAsync({
+                  programId: share.programId,
+                  userId: share.userId,
+                });
+                await refetchShare();
+                setUnshareRefetching(false);
+              }
+              void removeShare();
+            }
+          },
+          disabled: mutationLoading,
+        })}
+        variant={dc.doubleCheck ? "destructive" : "secondary"}
+      >
+        {dc.doubleCheck ? "Are you sure?" : "Remove"}{" "}
+        {mutationLoading && <LoadingSpinner className="ml-2" />}
+      </Button>
+    </div>
+  );
+}
+
+type InvitedRowProps = {
+  invite: {
+    programId: number;
+    email: string;
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  refetchInvite: () => Promise<any>;
+};
+
+function InvitedRow({ invite, refetchInvite }: InvitedRowProps) {
+  const dc = useDoubleCheck();
+
+  const uninviteProgramMutation = api.program.uninviteProgram.useMutation();
+  const [uninviteRefetching, setUninviteRefetching] = useState(false);
+
+  const mutationLoading =
+    uninviteProgramMutation.isLoading || uninviteRefetching;
+  return (
+    <div className="flex flex-row gap-4">
+      <Avatar>
+        <AvatarFallback>{invite.email[0] ?? null}</AvatarFallback>
+      </Avatar>
+      <div className="mr-auto flex flex-shrink flex-grow basis-0 flex-col">
+        <p className="text-gray-900 dark:text-gray-50">{invite.email}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          <Icon name="check" /> Invited
+        </p>
+      </div>
+      <Button
+        {...dc.getButtonProps({
+          type: "button",
+          value: "Remove",
+          onClick: () => {
+            if (mutationLoading) return;
+            if (dc.doubleCheck) {
+              async function removeShare() {
+                setUninviteRefetching(true);
+                await uninviteProgramMutation.mutateAsync({
+                  programId: invite.programId,
+                  email: invite.email,
+                });
+                await refetchInvite();
+                setUninviteRefetching(false);
+              }
+              void removeShare();
+            }
+          },
+          disabled: mutationLoading,
+        })}
+        variant={dc.doubleCheck ? "destructive" : "secondary"}
+      >
+        {dc.doubleCheck ? "Are you sure?" : "Remove"}{" "}
+        {uninviteRefetching && <LoadingSpinner className="ml-2" />}
+      </Button>
+    </div>
   );
 }

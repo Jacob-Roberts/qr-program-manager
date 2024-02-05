@@ -56,8 +56,6 @@ export const programRouter = createTRPCRouter({
       ownerId: ctx.session.user.id,
       fileUploadId: "not-uploaded-yet",
       fileUploadName: "No file uploaded yet",
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   }),
 
@@ -70,11 +68,33 @@ export const programRouter = createTRPCRouter({
   shares: protectedProcedure
     .input(z.object({ programId: z.number() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.db
-        .select()
+      const sharesAndUsersPromise = ctx.db
+        .select({
+          programId: programsShares.programId,
+          userId: programsShares.userId,
+          userName: users.name,
+          userEmail: users.email,
+          userImage: users.image,
+        })
         .from(programsShares)
         .where(eq(programsShares.programId, input.programId))
         .leftJoin(users, eq(users.id, programsShares.userId));
+      const invitesAndUsersPromise = ctx.db
+        .select({
+          programId: programShareInvites.programId,
+          email: programShareInvites.email,
+        })
+        .from(programShareInvites)
+        .where(eq(programShareInvites.programId, input.programId));
+
+      const [sharesAndUsers, invitesAndUsers] = await Promise.all([
+        sharesAndUsersPromise,
+        invitesAndUsersPromise,
+      ]);
+      return {
+        shares: sharesAndUsers,
+        invites: invitesAndUsers,
+      };
     }),
 
   shareProgram: protectedProcedure
@@ -85,18 +105,28 @@ export const programRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const inviteToken = createInviteToken(40);
       await ctx.db.insert(programShareInvites).values({
         programId: input.programId,
         email: input.email,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        inviteToken: inviteToken,
       });
+      if (process.env.ENABLE_EMAIL_INVITES !== "true") {
+        console.log(
+          "Not sending email invite because ENABLE_EMAIL_INVITES is not true",
+        );
+        return null;
+      }
       try {
         const { data, error } = await ctx.emailClient.emails.send({
           from: "Acme <onboarding@resend.dev>",
           to: [input.email],
           subject: "Hello world",
-          react: EmailTemplate({ firstName: "John" }) as React.ReactElement,
+          react: EmailTemplate({
+            firstName: "John",
+            inviteToken: inviteToken,
+            programId: input.programId,
+          }) as React.ReactElement,
         });
 
         if (error) {
@@ -134,6 +164,24 @@ export const programRouter = createTRPCRouter({
           ),
         );
     }),
+
+  uninviteProgram: protectedProcedure
+    .input(
+      z.object({
+        programId: z.number(),
+        email: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(programShareInvites)
+        .where(
+          and(
+            eq(programShareInvites.programId, input.programId),
+            eq(programShareInvites.email, input.email),
+          ),
+        );
+    }),
 });
 
 // Our custom nanoid ID generator uses base 63
@@ -147,4 +195,8 @@ function createSlug(type: "program", size?: number) {
     case "program":
       return `P_${nanoid(size)}`;
   }
+}
+
+function createInviteToken(size?: number) {
+  return `PI_${nanoid(size)}`;
 }
