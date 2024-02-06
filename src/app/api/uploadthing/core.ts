@@ -3,7 +3,7 @@ import { db } from "#/server/db";
 import { programs } from "#/server/db/schema";
 import { eq } from "drizzle-orm";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
-import { UTApi } from "uploadthing/server";
+import { UTApi, UploadThingError } from "uploadthing/server";
 import { z } from "zod";
 
 const f = createUploadthing();
@@ -24,7 +24,13 @@ export const ourFileRouter = {
       }),
     )
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ input }) => {
+    .middleware(async ({ input, files }) => {
+      for (const file of files) {
+        if (file.size > 4 * 1024 * 1024) {
+          throw new UploadThingError("File too large");
+        }
+      }
+
       // This code runs on your server before upload
       const session = await getServerAuthSession();
 

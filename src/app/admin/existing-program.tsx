@@ -236,8 +236,18 @@ export function ExistingProgramCard({
                 // Do something with the response
                 router.refresh();
               }}
-              onUploadError={(error: Error) => {
-                setError(error.message);
+              onBeforeUploadBegin={f => {
+                setError(null);
+                return f;
+              }}
+              onUploadError={error => {
+                //@ts-expect-error upload thing error types are wrong
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                if (error.cause?.data?.message === "File too large") {
+                  setError("File is too large");
+                } else {
+                  setError(error.message);
+                }
               }}
               input={{ programId: card.id }}
             />
