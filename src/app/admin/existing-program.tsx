@@ -302,7 +302,7 @@ export function ExistingProgramCard({
           size={dc.doubleCheck ? "default" : "icon"}
           className={cn(
             "min-w-10 text-red-500 hover:text-red-600 active:text-red-700",
-            dc.doubleCheck && "w-44",
+            dc.doubleCheck && "w-30",
           )}
         >
           {loading ? (
