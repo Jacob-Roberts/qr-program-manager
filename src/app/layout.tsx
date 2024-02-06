@@ -2,7 +2,7 @@ import "#/styles/globals.css";
 
 import { ourFileRouter } from "#/app/api/uploadthing/core";
 import { TailwindIndicator } from "#/components/tailwind-indicator";
-import { Toaster } from "#/components/ui/toaster";
+import { Toaster } from "#/components/ui/sonner";
 import { env } from "#/env";
 import { TRPCReactProvider } from "#/trpc/react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
