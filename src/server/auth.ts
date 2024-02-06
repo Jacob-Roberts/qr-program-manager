@@ -55,6 +55,9 @@ export const authOptions: NextAuthOptions = {
     logo: "/icon.svg",
     colorScheme: "auto",
   },
+  pages: {
+    signIn: "/sign-in",
+  },
   providers: [
     // AppleProvider({
     //   clientId: env.APPLE_CLIENT_ID,
