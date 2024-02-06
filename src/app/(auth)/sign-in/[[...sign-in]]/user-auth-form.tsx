@@ -45,7 +45,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     setIsLoading(false);
 
-    if (!signInResult?.ok) {
+    if (
+      typeof signInResult === "undefined" ||
+      !signInResult.ok ||
+      signInResult.error
+    ) {
+      console.error("Sign in error", signInResult?.error ?? signInResult);
       return toast.error("Something went wrong.", {
         description: "Your sign in request failed. Please try again.",
       });

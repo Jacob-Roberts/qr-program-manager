@@ -11,20 +11,16 @@ export const sendVerificationRequest = async (
   params: SendVerificationRequestParams,
 ) => {
   const { identifier: email, url } = params;
-  try {
-    console.log("Sending email to", email);
-    const { error } = await resend.emails.send({
-      from: "QR Program Manager <onboarding@resend.dev>",
-      to: [email],
-      subject: "Login Link to your Account",
-      react: MagicLinkAuthEmail({
-        loginHref: url,
-      }) as React.ReactElement,
-    });
-    if (error) {
-      throw error;
-    }
-  } catch (error) {
-    console.log({ error });
+  console.log("Sending email to", email);
+  const { error } = await resend.emails.send({
+    from: "QR Program Manager <onboarding@resend.dev>",
+    to: [email],
+    subject: "Login Link to your Account",
+    react: MagicLinkAuthEmail({
+      loginHref: url,
+    }) as React.ReactElement,
+  });
+  if (error) {
+    throw error;
   }
 };
