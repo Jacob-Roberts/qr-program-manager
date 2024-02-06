@@ -13,7 +13,7 @@ export const sendVerificationRequest = async (
   const { identifier: email, url } = params;
   console.log("Sending email to", email);
   const { error } = await resend.emails.send({
-    from: "QR Program Manager <noreply@qr-program-manager.vercel.app>",
+    from: "QR Program Manager <noreply@accounts.jakerob.pro>",
     to: [email],
     subject: "Login Link to your Account",
     react: MagicLinkAuthEmail({
