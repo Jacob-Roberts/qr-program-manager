@@ -215,7 +215,7 @@ export const programRouter = createTRPCRouter({
         const { data, error } = await ctx.emailClient.emails.send({
           from: "QR Program Manager <onboarding@resend.dev>",
           to: [input.email],
-          subject: "Hello world",
+          subject: `You've been invited to collaborate on a program`,
           react: InviteUserEmail({
             username: input.email,
             invitedByEmail: ctx.session.user.email ?? undefined,
