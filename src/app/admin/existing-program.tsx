@@ -15,6 +15,12 @@ import {
 } from "#/components/ui/card";
 import { InlineEdit } from "#/components/ui/inline-edit";
 import { Input } from "#/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "#/components/ui/tooltip";
 import { env } from "#/env";
 import { useDoubleCheck } from "#/lib/client-utils";
 import { cn } from "#/lib/utils";
@@ -34,6 +40,7 @@ export type ExistingProgramCardProps = {
   uploadedFileName: string;
   createdAt: string;
   updatedAt: string;
+  sharedWithMe: boolean;
 };
 
 export function ExistingProgramCard({
@@ -113,7 +120,19 @@ export function ExistingProgramCard({
   const canvasID = `${card.id.toString()}-qr-canvas`;
   return (
     <Card key={card.id} className="mx-auto flex w-full flex-col sm:w-96">
-      <CardHeader>
+      <CardHeader className="relative">
+        {card.sharedWithMe ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="absolute right-3 top-3 cursor-default">
+                <Icon name="users" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>This program has been shared with you.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : null}
         <CardTitle className="tracking-normal">
           <InlineEdit
             isRequired
@@ -272,7 +291,10 @@ export function ExistingProgramCard({
             onClick: () => {
               if (loading) return;
               if (dc.doubleCheck) {
-                deleteProgramMutation.mutate(card.id);
+                deleteProgramMutation.mutate({
+                  programId: card.id,
+                  sharedWithMe: card.sharedWithMe,
+                });
               }
             },
           })}

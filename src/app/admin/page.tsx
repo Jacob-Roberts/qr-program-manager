@@ -6,16 +6,21 @@ import { EditQRCode } from "./edit-qrcode.tsx";
 export default async function AdminPage() {
   noStore();
 
-  const cards = (await api.program.getPrograms.query()).map(card => ({
-    id: card.id,
-    slug: card.slug,
-    name: card.name,
-    createdAt: formatDate(card.createdAt),
-    updatedAt: formatDate(card.updatedAt),
-    uploadedFileName: card.fileUploadName,
-  }));
+  const programs = await api.program.getPrograms.query();
 
-  return <EditQRCode cards={cards} />;
+  return (
+    <EditQRCode
+      programs={programs.map(card => ({
+        id: card.id,
+        slug: card.slug,
+        name: card.name,
+        createdAt: formatDate(card.createdAt),
+        updatedAt: formatDate(card.updatedAt),
+        uploadedFileName: card.fileUploadName,
+        sharedWithMe: card.shared,
+      }))}
+    />
+  );
 }
 
 function formatDate(date: string | Date) {

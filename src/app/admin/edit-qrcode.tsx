@@ -8,10 +8,10 @@ import {
 } from "./existing-program";
 
 type EditQRCodeProps = {
-  cards: ExistingProgramCardProps[];
+  programs: ExistingProgramCardProps[];
 };
 
-export async function EditQRCode({ cards }: EditQRCodeProps) {
+export async function EditQRCode({ programs }: EditQRCodeProps) {
   noStore();
 
   const enableShareWithFriends =
@@ -21,11 +21,13 @@ export async function EditQRCode({ cards }: EditQRCodeProps) {
   return (
     <main className="flex-1 p-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {cards.map(card => (
+        {programs.map(card => (
           <ExistingProgramCard
             key={card.id}
             card={card}
-            enableShareWithFriends={enableShareWithFriends}
+            enableShareWithFriends={
+              enableShareWithFriends && !card.sharedWithMe
+            }
           />
         ))}
         <AddNewProgram />

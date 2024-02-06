@@ -93,7 +93,6 @@ export const InviteUserEmail = ({
                 </Column>
                 <Column align="left">
                   <Img
-                    className="rounded-full"
                     src={`${baseUrl}/static/qr-program-manager-logo.png`}
                     width="64"
                     height="64"

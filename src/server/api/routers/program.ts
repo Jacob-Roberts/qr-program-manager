@@ -42,12 +42,50 @@ export const programRouter = createTRPCRouter({
     return "you can now see this secret message!";
   }),
 
-  getPrograms: protectedProcedure.query(({ ctx }) => {
-    return ctx.db
-      .select()
+  getPrograms: protectedProcedure.query(async ({ ctx }) => {
+    const owned = await ctx.db
+      .select({
+        id: programs.id,
+        slug: programs.slug,
+        ownerId: programs.ownerId,
+        name: programs.name,
+        fileUploadName: programs.fileUploadName,
+        fileUploadId: programs.fileUploadId,
+        createdAt: programs.createdAt,
+        updatedAt: programs.updatedAt,
+      })
       .from(programs)
       .where(eq(programs.ownerId, ctx.session.user.id))
       .orderBy(asc(programs.createdAt));
+
+    const shared = await ctx.db
+      .select({
+        id: programs.id,
+        slug: programs.slug,
+        ownerId: programs.ownerId,
+        name: programs.name,
+        fileUploadName: programs.fileUploadName,
+        fileUploadId: programs.fileUploadId,
+        createdAt: programs.createdAt,
+        updatedAt: programs.updatedAt,
+      })
+      .from(programsShares)
+      .rightJoin(programs, eq(programs.id, programsShares.programId))
+      .where(eq(programsShares.userId, ctx.session.user.id))
+      .orderBy(asc(programs.createdAt));
+
+    // Merge the two lists and sort by createdAt
+    // Add a flag to indicate if the program is owned or shared
+    const allPrograms = owned
+      .map(p => ({ ...p, shared: false }))
+      .concat(shared.map(p => ({ ...p, shared: true })))
+      .sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+    return allPrograms;
   }),
 
   addProgram: protectedProcedure.mutation(async ({ ctx }) => {
@@ -61,9 +99,34 @@ export const programRouter = createTRPCRouter({
   }),
 
   deleteProgram: protectedProcedure
-    .input(z.number())
+    .input(
+      z.object({
+        programId: z.number(),
+        sharedWithMe: z.boolean(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.delete(programs).where(eq(programs.id, input));
+      // If I'm the owner, I want to delete it.
+      if (!input.sharedWithMe) {
+        await ctx.db
+          .delete(programs)
+          .where(
+            and(
+              eq(programs.id, input.programId),
+              eq(programs.ownerId, ctx.session.user.id),
+            ),
+          );
+      } else {
+        // If I'm not the owner, I want to unshare it.
+        await ctx.db
+          .delete(programsShares)
+          .where(
+            and(
+              eq(programsShares.programId, input.programId),
+              eq(programsShares.userId, ctx.session.user.id),
+            ),
+          );
+      }
     }),
 
   shares: protectedProcedure
@@ -102,6 +165,24 @@ export const programRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // find the program name
+      const program = await ctx.db
+        .select({
+          name: programs.name,
+          id: programs.id,
+        })
+        .from(programs)
+        .where(
+          and(
+            eq(programs.id, input.programId),
+            eq(programs.ownerId, ctx.session.user.id),
+          ),
+        )
+        .limit(1);
+      if (program.length === 0 || typeof program[0] === "undefined") {
+        throw new Error("not found");
+      }
+
       // First see if we can immediately add the share
       const user = await ctx.db
         .select()
@@ -118,19 +199,6 @@ export const programRouter = createTRPCRouter({
 
       // If we didn't find a user, then invite them
       const inviteToken = createInviteToken(40);
-
-      // find the program name
-      const program = await ctx.db
-        .select({
-          name: programs.name,
-          id: programs.id,
-        })
-        .from(programs)
-        .where(eq(programs.id, input.programId))
-        .limit(1);
-      if (program.length === 0 || typeof program[0] === "undefined") {
-        throw new Error("not found");
-      }
 
       await ctx.db.insert(programShareInvites).values({
         programId: input.programId,

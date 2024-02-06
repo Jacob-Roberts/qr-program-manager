@@ -11,4 +11,5 @@ export type IconName =
   | "spinner"
   | "square-pen"
   | "trash-2"
+  | "users"
   | "x";
