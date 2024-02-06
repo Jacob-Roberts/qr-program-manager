@@ -205,7 +205,7 @@ export const programRouter = createTRPCRouter({
         email: input.email,
         inviteToken: inviteToken,
       });
-      if (process.env.ENABLE_EMAIL_INVITES !== "true") {
+      if (!env.ENABLE_EMAIL_INVITES) {
         console.log(
           "Not sending email invite because ENABLE_EMAIL_INVITES is not true",
         );
@@ -213,7 +213,7 @@ export const programRouter = createTRPCRouter({
       }
       try {
         const { data, error } = await ctx.emailClient.emails.send({
-          from: "Acme <onboarding@resend.dev>",
+          from: "QR Program Manager <onboarding@resend.dev>",
           to: [input.email],
           subject: "Hello world",
           react: InviteUserEmail({

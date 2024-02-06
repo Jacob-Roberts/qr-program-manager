@@ -1,3 +1,4 @@
+import { env } from "#/env";
 import { get } from "@vercel/edge-config";
 import { unstable_noStore as noStore } from "next/cache";
 
@@ -16,7 +17,7 @@ export async function EditQRCode({ programs }: EditQRCodeProps) {
 
   const enableShareWithFriends =
     Boolean(await get("enableShareWithFriends")) ||
-    Boolean(process.env.OVERRIDE_ENABLE_SHARE_WITH_FRIENDS);
+    env.OVERRIDE_ENABLE_SHARE_WITH_FRIENDS;
 
   return (
     <main className="flex-1 p-6">

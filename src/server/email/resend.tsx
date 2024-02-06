@@ -10,15 +10,11 @@ export const resend = new Resend(env.RESEND_API_KEY);
 export const sendVerificationRequest = async (
   params: SendVerificationRequestParams,
 ) => {
-  const {
-    identifier: email,
-    url,
-    provider: { from },
-  } = params;
+  const { identifier: email, url } = params;
   try {
     console.log("Sending email to", email);
-    const { data, error } = await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
+    const { error } = await resend.emails.send({
+      from: "QR Program Manager <onboarding@resend.dev>",
       to: [email],
       subject: "Login Link to your Account",
       react: MagicLinkAuthEmail({

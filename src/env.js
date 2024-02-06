@@ -29,6 +29,11 @@ export const env = createEnv({
     UPLOADTHING_APP_ID: z.string(),
     UPLOADTHING_SECRET: z.string(),
     RESEND_API_KEY: z.string(),
+    ENABLE_EMAIL_INVITES: z.coerce.boolean().optional().default(false),
+    OVERRIDE_ENABLE_SHARE_WITH_FRIENDS: z.coerce
+      .boolean()
+      .optional()
+      .default(false),
   },
 
   /**
@@ -54,6 +59,9 @@ export const env = createEnv({
     // APPLE_CLIENT_ID: process.env.APPLE_CLIENT_ID,
     // APPLE_CLIENT_SECRET: process.env.APPLE_CLIENT_SECRET,
     NEXT_PUBLIC_DEPLOY_URL: process.env.NEXT_PUBLIC_DEPLOY_URL,
+    ENABLE_EMAIL_INVITES: process.env.ENABLE_EMAIL_INVITES,
+    OVERRIDE_ENABLE_SHARE_WITH_FRIENDS:
+      process.env.OVERRIDE_ENABLE_SHARE_WITH_FRIENDS,
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,

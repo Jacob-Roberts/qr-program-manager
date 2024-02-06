@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     EmailProvider({
-      from: "noreply@example.com",
+      from: "onboarding@resend.dev",
       // Custom sendVerificationRequest() function
       sendVerificationRequest: sendVerificationRequest,
     }),
