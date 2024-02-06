@@ -1,10 +1,8 @@
 import styles from "./authentication.module.css";
 
 import { Icon } from "#/components/Icon";
-import { buttonVariants } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
 import { type Metadata } from "next";
-import Link from "next/link";
 
 import { UserAuthForm } from "./user-auth-form";
 
@@ -15,20 +13,11 @@ export const metadata: Metadata = {
 
 export default function AuthenticationPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0 xl:grid-cols-3">
-        <Link
-          href="/login"
-          className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "absolute right-4 top-4 md:right-8 md:top-8",
-          )}
-        >
-          Login
-        </Link>
+    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-slate-800">
+      <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
         <div
           className={cn(
-            "z-10 col-span-1 hidden h-[150%] bg-slate-300 lg:block xl:col-span-2",
+            "z-10 hidden h-[150%] bg-slate-300 lg:block dark:bg-slate-900",
             styles.wrapper,
           )}
         >
@@ -42,32 +31,18 @@ export default function AuthenticationPage() {
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
-              <Icon name="logo" className="mx-auto h-6 w-6" />
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Create an account
+              <Icon
+                name="logo"
+                className="mx-auto h-12 w-12 text-black dark:text-white"
+              />
+              <h1 className="text-2xl font-semibold tracking-tight text-black dark:text-white">
+                Sign in to your account
               </h1>
-              <p className="text-sm text-slate-700">
-                Enter your email below to create your account
+              <p className="text-sm text-slate-700 dark:text-slate-50">
+                Enter your email below to continue.
               </p>
             </div>
             <UserAuthForm />
-            <p className="px-8 text-center text-sm text-slate-700">
-              By clicking continue, you agree to our{" "}
-              <Link
-                href="/terms"
-                className="underline underline-offset-4 hover:text-slate-800"
-              >
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link
-                href="/privacy"
-                className="underline underline-offset-4 hover:text-slate-800"
-              >
-                Privacy Policy
-              </Link>
-              .
-            </p>
           </div>
         </div>
       </div>

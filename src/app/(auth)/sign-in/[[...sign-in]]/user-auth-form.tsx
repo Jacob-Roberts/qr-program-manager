@@ -5,6 +5,7 @@ import { LoadingSpinner } from "#/components/loading-spinner";
 import { buttonVariants } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Label } from "#/components/ui/label";
+import { useToast } from "#/components/ui/use-toast";
 import { cn } from "#/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
@@ -22,6 +23,7 @@ const userAuthSchema = z.object({
 });
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
@@ -30,7 +32,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(userAuthSchema),
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false);
+  const [isGoogleLoading, setIsGoogleLoading] = React.useState<boolean>(false);
   const searchParams = useSearchParams();
 
   async function onSubmit(data: FormData) {
@@ -39,23 +41,23 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     const signInResult = await signIn("email", {
       email: data.email.toLowerCase(),
       redirect: false,
-      callbackUrl: searchParams?.get("from") ?? "/dashboard",
+      callbackUrl: searchParams?.get("from") ?? "/admin",
     });
 
     setIsLoading(false);
 
     if (!signInResult?.ok) {
-      // return toast({
-      //   title: "Something went wrong.",
-      //   description: "Your sign in request failed. Please try again.",
-      //   variant: "destructive",
-      // });
+      return toast({
+        title: "Something went wrong.",
+        description: "Your sign in request failed. Please try again.",
+        variant: "destructive",
+      });
     }
 
-    // return toast({
-    //   title: "Check your email",
-    //   description: "We sent you a login link. Be sure to check your spam too.",
-    // });
+    return toast({
+      title: "Check your email",
+      description: "We sent you a login link. Be sure to check your spam too.",
+    });
   }
 
   return (
@@ -73,7 +75,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading || isGitHubLoading}
+              className="dark:text-white"
+              disabled={isLoading || isGoogleLoading}
               {...register("email")}
             />
             {errors?.email && (
@@ -93,26 +96,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background text-muted-foreground px-2">
-            Or continue with
+          <span className="bg-white px-2 text-gray-700 dark:bg-slate-800 dark:text-gray-50">
+            Or
           </span>
         </div>
       </div>
       <button
         type="button"
-        className={cn(buttonVariants({ variant: "outline" }))}
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "dark:text-white",
+        )}
         onClick={() => {
-          setIsGitHubLoading(true);
+          setIsGoogleLoading(true);
           void signIn("google");
         }}
-        disabled={isLoading || isGitHubLoading}
+        disabled={isLoading || isGoogleLoading}
       >
-        {isGitHubLoading ? (
+        {isGoogleLoading ? (
           <LoadingSpinner className="mr-2 h-4 w-4" />
         ) : (
-          <Icon name="check" className="mr-2 h-4 w-4" />
+          <Icon name="google" className="mr-2 h-10 w-10" />
         )}{" "}
-        Github
+        Continue with Google
       </button>
     </div>
   );

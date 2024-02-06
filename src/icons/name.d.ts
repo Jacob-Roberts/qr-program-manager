@@ -4,6 +4,7 @@ export type IconName =
   | "check"
   | "chevron-down"
   | "download"
+  | "google"
   | "log-out"
   | "logo"
   | "plus"

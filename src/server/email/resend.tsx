@@ -22,7 +22,7 @@ export const sendVerificationRequest = async (
       to: [email],
       subject: "Login Link to your Account",
       react: MagicLinkAuthEmail({
-        loginCode: url,
+        loginHref: url,
       }) as React.ReactElement,
     });
     if (error) {

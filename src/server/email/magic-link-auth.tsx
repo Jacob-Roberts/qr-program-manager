@@ -8,95 +8,74 @@ import {
   Img,
   Link,
   Preview,
+  Tailwind,
   Text,
 } from "@react-email/components";
 import * as React from "react";
 
 interface MagicLinkAuthEmailProps {
-  loginCode?: string;
+  loginHref?: string;
 }
 
 const baseUrl = env.NEXT_PUBLIC_DEPLOY_URL;
 
-export const MagicLinkAuthEmail = ({ loginCode }: MagicLinkAuthEmailProps) => (
+export const MagicLinkAuthEmail = ({ loginHref }: MagicLinkAuthEmailProps) => (
   <Html>
     <Head />
     <Preview>Log in with this magic link</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>Login</Heading>
-        <Link
-          href="https://notion.so"
-          target="_blank"
-          style={{
-            ...link,
-            display: "block",
-            marginBottom: "16px",
-          }}
-        >
-          Click here to log in with this magic link
-        </Link>
-        <Text style={{ ...text, marginBottom: "14px" }}>
-          Or, copy and paste this temporary login code:
-        </Text>
-        <code style={code}>{loginCode}</code>
-        <Text
-          style={{
-            ...text,
-            color: "#ababab",
-            marginTop: "14px",
-            marginBottom: "16px",
-          }}
-        >
-          If you didn&apos;t try to login, you can safely ignore this email.
-        </Text>
-        <Text
-          style={{
-            ...text,
-            color: "#ababab",
-            marginTop: "12px",
-            marginBottom: "38px",
-          }}
-        >
-          Hint: You can set a permanent password in Settings & members → My
-          account.
-        </Text>
-        <Img
-          src={`${baseUrl}/static/notion-logo.png`}
-          width="32"
-          height="32"
-          alt="Notion's Logo"
-        />
-        <Text style={footer}>
+    <Tailwind>
+      <Body className="bg-white">
+        <Container className="mx-auto px-3">
+          <Heading style={h1}>Login</Heading>
           <Link
-            href="https://notion.so"
+            href={loginHref}
             target="_blank"
-            style={{ ...link, color: "#898989" }}
+            style={{
+              ...link,
+              display: "block",
+              marginBottom: "16px",
+            }}
           >
-            Notion.so
+            Click here to log in with this magic link
           </Link>
-          , the all-in-one-workspace
-          <br />
-          for your notes, tasks, wikis, and databases.
-        </Text>
-      </Container>
-    </Body>
+          <Text style={{ ...text, marginBottom: "14px" }}>
+            Or, copy and paste this URL into your browser:{" "}
+          </Text>
+          <code style={code}>{loginHref}</code>
+          <Text
+            style={{
+              ...text,
+              color: "#ababab",
+              marginTop: "14px",
+              marginBottom: "16px",
+            }}
+          >
+            If you didn&apos;t try to login, you can safely ignore this email.
+          </Text>
+          <Img
+            src={`${baseUrl}/static/qr-program-manager-round.png`}
+            width="32"
+            height="32"
+            alt="QR Program Manager Logo"
+          />
+          <Text style={footer}>
+            <Link
+              href="https://qr-program-manager.vercel.app"
+              target="_blank"
+              style={{ ...link, color: "#898989" }}
+            >
+              https://qr-program-manager.vercel.app
+            </Link>
+          </Text>
+        </Container>
+      </Body>
+    </Tailwind>
   </Html>
 );
 
 MagicLinkAuthEmail.PreviewProps = {
   loginCode: "sparo-ndigo-amurt-secan",
 } as MagicLinkAuthEmailProps;
-
-const main = {
-  backgroundColor: "#ffffff",
-};
-
-const container = {
-  paddingLeft: "12px",
-  paddingRight: "12px",
-  margin: "0 auto",
-};
 
 const h1 = {
   color: "#333",
