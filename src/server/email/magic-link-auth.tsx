@@ -1,13 +1,16 @@
 import { env } from "#/env";
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
   Preview,
+  Section,
   Tailwind,
   Text,
 } from "@react-email/components";
@@ -24,33 +27,32 @@ export const MagicLinkAuthEmail = ({ loginHref }: MagicLinkAuthEmailProps) => (
     <Head />
     <Preview>Log in with this magic link</Preview>
     <Tailwind>
-      <Body className="bg-white">
-        <Container className="mx-auto px-3">
-          <Heading style={h1}>Login</Heading>
-          <Link
-            href={loginHref}
-            target="_blank"
-            style={{
-              ...link,
-              display: "block",
-              marginBottom: "16px",
-            }}
-          >
-            Click here to log in with this magic link
-          </Link>
-          <Text style={{ ...text, marginBottom: "14px" }}>
-            Or, copy and paste this URL into your browser:{" "}
-          </Text>
-          <code style={code}>{loginHref}</code>
-          <Text
-            style={{
-              ...text,
-              color: "#ababab",
-              marginTop: "14px",
-              marginBottom: "16px",
-            }}
-          >
-            If you didn&apos;t try to login, you can safely ignore this email.
+      <Body className="mx-auto my-auto bg-white px-2 font-sans">
+        <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
+          <Section className="mt-[32px]">
+            <Img
+              src={`${baseUrl}/static/qr-program-manager-round.png`}
+              width="40"
+              height="40"
+              alt="QR Program Manager Logo"
+              className="mx-auto my-0"
+            />
+          </Section>
+          <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
+            Login to <strong>QR Program Manager</strong>
+          </Heading>
+          <Section className="mb-[32px] mt-[32px] text-center">
+            <Button
+              className="rounded bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+              href={loginHref}
+            >
+              Click here to log in with this magic link
+            </Button>
+          </Section>
+          <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
+          <Text className="text-[12px] leading-[24px] text-[#666666]">
+            If you haven&apos;t requested this email, there&apos;s nothing to
+            worry about - you can safely ignore it.
           </Text>
           <Img
             src={`${baseUrl}/static/qr-program-manager-round.png`}
@@ -58,11 +60,10 @@ export const MagicLinkAuthEmail = ({ loginHref }: MagicLinkAuthEmailProps) => (
             height="32"
             alt="QR Program Manager Logo"
           />
-          <Text style={footer}>
+          <Text className="mb-6 mt-3">
             <Link
               href="https://qr-program-manager.vercel.app"
-              target="_blank"
-              style={{ ...link, color: "#898989" }}
+              className="text-sm text-[#2754C5] underline"
             >
               https://qr-program-manager.vercel.app
             </Link>
@@ -74,51 +75,8 @@ export const MagicLinkAuthEmail = ({ loginHref }: MagicLinkAuthEmailProps) => (
 );
 
 MagicLinkAuthEmail.PreviewProps = {
-  loginCode: "sparo-ndigo-amurt-secan",
+  loginHref:
+    "https://qr-program-manager.vercel.app/api/auth/callback/email?callbackUrl=https%3A%2F%2Fqr-program-manager.vercel.app%2Fadmin&token=1688cef6347d8fb716ac1ae171be2fde563e1ff61109b39b1953600811a0c2c8&email=jake.j.rob%40gmail.com",
 } as MagicLinkAuthEmailProps;
 
-const h1 = {
-  color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "24px",
-  fontWeight: "bold",
-  margin: "40px 0",
-  padding: "0",
-};
-
-const link = {
-  color: "#2754C5",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "14px",
-  textDecoration: "underline",
-};
-
-const text = {
-  color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "14px",
-  margin: "24px 0",
-};
-
-const footer = {
-  color: "#898989",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "12px",
-  lineHeight: "22px",
-  marginTop: "12px",
-  marginBottom: "24px",
-};
-
-const code = {
-  display: "inline-block",
-  padding: "16px 4.5%",
-  width: "90.5%",
-  backgroundColor: "#f4f4f4",
-  borderRadius: "5px",
-  border: "1px solid #eee",
-  color: "#333",
-};
+export default MagicLinkAuthEmail;
