@@ -135,5 +135,3 @@ InviteUserEmail.PreviewProps = {
   programName: "Enigma",
   inviteLink: "https://vercel.com/teams/invite/foo",
 } as InviteUserEmailProps;
-
-export default InviteUserEmail;

@@ -8,7 +8,11 @@ import {
   getServerSession,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
+// import AppleProvider from "next-auth/providers/apple";
+import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
+
+import { sendVerificationRequest } from "./email/resend";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -47,10 +51,23 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   adapter: DrizzleAdapter(db, mysqlTable) as Adapter,
+  theme: {
+    logo: "/icon.svg",
+    colorScheme: "auto",
+  },
   providers: [
+    // AppleProvider({
+    //   clientId: env.APPLE_CLIENT_ID,
+    //   clientSecret: env.APPLE_CLIENT_SECRET,
+    // }),
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      from: "noreply@example.com",
+      // Custom sendVerificationRequest() function
+      sendVerificationRequest: sendVerificationRequest,
     }),
     /**
      * ...add more providers here.
