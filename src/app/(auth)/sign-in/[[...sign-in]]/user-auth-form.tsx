@@ -40,7 +40,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     const signInResult = await signIn("email", {
       email: data.email.toLowerCase(),
       redirect: false,
-      callbackUrl: searchParams?.get("from") ?? "/admin",
+      callbackUrl: searchParams?.get("callbackUrl") ?? "/admin",
     });
 
     setIsLoading(false);
@@ -105,7 +105,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         )}
         onClick={() => {
           setIsGoogleLoading(true);
-          void signIn("google");
+          void signIn("google", {
+            callbackUrl: searchParams?.get("callbackUrl") ?? "/admin",
+          });
         }}
         disabled={isLoading || isGoogleLoading}
       >
