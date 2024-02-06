@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     EmailProvider({
-      from: "onboarding@resend.dev",
+      from: "noreply@qr-program-manager.vercel.app",
       // Custom sendVerificationRequest() function
       sendVerificationRequest: sendVerificationRequest,
     }),

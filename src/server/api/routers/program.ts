@@ -213,7 +213,7 @@ export const programRouter = createTRPCRouter({
       }
       try {
         const { data, error } = await ctx.emailClient.emails.send({
-          from: "QR Program Manager <onboarding@resend.dev>",
+          from: "QR Program Manager <noreply@qr-program-manager.vercel.app>",
           to: [input.email],
           subject: `You've been invited to collaborate on a program`,
           react: InviteUserEmail({
