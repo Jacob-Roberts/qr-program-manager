@@ -1,4 +1,4 @@
-name: Keep Planetscale alive cron job
+name: Keep DB alive cron job
 on:
   schedule:
     - cron: "0 3 * * 0"
