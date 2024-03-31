@@ -1,6 +1,6 @@
 import { env } from "#/env";
 import { db } from "#/server/db";
-import { mysqlTable } from "#/server/db/schema";
+import { createTable } from "#/server/db/schema";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {
   type DefaultSession,
@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   },
-  adapter: DrizzleAdapter(db, mysqlTable) as Adapter,
+  adapter: DrizzleAdapter(db, createTable) as Adapter,
   theme: {
     logo: "/icon.svg",
     colorScheme: "auto",
