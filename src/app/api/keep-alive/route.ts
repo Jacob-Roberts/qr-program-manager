@@ -11,8 +11,7 @@ export async function PUT(request: Request) {
 
   await db
     .insert(keepAlive)
-    .values({ id: 1, dummy: Math.random() < 0.5 ? 1 : 0 })
-    .onDuplicateKeyUpdate({ set: { dummy: Math.random() < 0.5 ? 1 : 0 } });
+    .values({ id: 1, dummy: Math.random() < 0.5 ? 1 : 0 });
 
   return new Response(undefined, {
     status: 204,

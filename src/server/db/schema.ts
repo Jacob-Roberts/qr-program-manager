@@ -1,14 +1,14 @@
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
-  bigint,
   index,
-  int,
-  mysqlTableCreator,
+  integer,
+  pgTableCreator,
   primaryKey,
+  serial,
   text,
   timestamp,
   varchar,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
 /**
@@ -17,23 +17,18 @@ import { type AdapterAccount } from "next-auth/adapters";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const mysqlTable = mysqlTableCreator(
-  name => `qr-program-manager_${name}`,
-);
+export const createTable = pgTableCreator(name => `qr-program-manager_${name}`);
 
-export const posts = mysqlTable(
+export const posts = createTable(
   "post",
   {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
-    createdById: varchar("createdById", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt")
-      .default(sql`CURRENT_TIMESTAMP`)
+    createdById: varchar("createdById", { length: 255 })
       .notNull()
-      .onUpdateNow(),
+      .references(() => users.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
   example => ({
     createdByIdIdx: index("createdById_idx").on(example.createdById),
@@ -41,99 +36,84 @@ export const posts = mysqlTable(
   }),
 );
 
-export const programs = mysqlTable(
+export const programs = createTable(
   "program",
   {
-    id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
+    id: serial("id").primaryKey(),
     slug: varchar("slug", { length: 256 }).notNull(),
     ownerId: varchar("ownerId", { length: 255 }).notNull(),
     name: varchar("name", { length: 256 }).notNull().default(""),
     fileUploadName: varchar("fileUploadName", { length: 256 }).notNull(),
     fileUploadId: varchar("fileUploadId", { length: 256 }).notNull(),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull()
-      .onUpdateNow(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
   example => ({
-    ownerIdIdx: index("ownerId_idx").on(example.ownerId),
+    ownerIdIdx: index("program_ownerId_idx").on(example.ownerId),
   }),
 );
 
-export const programShareInvites = mysqlTable(
+export const programShareInvites = createTable(
   "programShareInvite",
   {
-    programId: bigint("programId", { mode: "number" }).notNull(),
+    programId: serial("programId").notNull(),
     email: varchar("email", { length: 255 }).notNull(),
     inviteToken: varchar("inviteToken", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull()
-      .onUpdateNow(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
   table => ({
     pk: primaryKey({ columns: [table.programId, table.email] }),
-    programIdIdx: index("programId_idx").on(table.programId),
+    programIdIdx: index("programShareInvite_programId_idx").on(table.programId),
   }),
 );
 
-export const programsShares = mysqlTable(
+export const programsShares = createTable(
   "programShare",
   {
-    programId: bigint("programId", { mode: "number" }).notNull(),
+    programId: serial("programId").notNull(),
     userId: varchar("userId", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull()
-      .onUpdateNow(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   },
   table => ({
     pk: primaryKey({ columns: [table.programId, table.userId] }),
-    programIdIdx: index("programId_idx").on(table.programId),
-    userIdIdx: index("userId_idx").on(table.userId),
+    programIdIdx: index("programShare_programId_idx").on(table.programId),
+    userIdIdx: index("programShare_userId_idx").on(table.userId),
   }),
 );
 
-export const keepAlive = mysqlTable(
+export const keepAlive = createTable(
   "keepAlive",
   {
-    id: int("id").primaryKey(),
-    dummy: int("dummy").notNull(),
+    id: integer("id").primaryKey(),
+    dummy: integer("dummy").notNull(),
   },
   example => ({
     idIdx: index("id_idx").on(example.id),
   }),
 );
 
-export const users = mysqlTable("user", {
+export const users = createTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", {
     mode: "date",
-    fsp: 3,
-  }).default(sql`CURRENT_TIMESTAMP(3)`),
+  }).defaultNow(),
   image: varchar("image", { length: 255 }),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
-  sessions: many(sessions),
 }));
 
-export const accounts = mysqlTable(
+export const accounts = createTable(
   "account",
   {
-    userId: varchar("userId", { length: 255 }).notNull(),
+    userId: varchar("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
     type: varchar("type", { length: 255 })
       .$type<AdapterAccount["type"]>()
       .notNull(),
@@ -141,15 +121,17 @@ export const accounts = mysqlTable(
     providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
-    expires_at: int("expires_at"),
+    expires_at: integer("expires_at"),
     token_type: varchar("token_type", { length: 255 }),
     scope: varchar("scope", { length: 255 }),
     id_token: text("id_token"),
     session_state: varchar("session_state", { length: 255 }),
   },
   account => ({
-    compoundKey: primaryKey(account.provider, account.providerAccountId),
-    userIdIdx: index("userId_idx").on(account.userId),
+    compoundKey: primaryKey({
+      columns: [account.provider, account.providerAccountId],
+    }),
+    userIdIdx: index("account_userId_idx").on(account.userId),
   }),
 );
 
@@ -157,17 +139,19 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, { fields: [accounts.userId], references: [users.id] }),
 }));
 
-export const sessions = mysqlTable(
+export const sessions = createTable(
   "session",
   {
     sessionToken: varchar("sessionToken", { length: 255 })
       .notNull()
       .primaryKey(),
-    userId: varchar("userId", { length: 255 }).notNull(),
+    userId: varchar("userId", { length: 255 })
+      .notNull()
+      .references(() => users.id),
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   session => ({
-    userIdIdx: index("userId_idx").on(session.userId),
+    userIdIdx: index("session_userId_idx").on(session.userId),
   }),
 );
 
@@ -175,7 +159,7 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));
 
-export const verificationTokens = mysqlTable(
+export const verificationTokens = createTable(
   "verificationToken",
   {
     identifier: varchar("identifier", { length: 255 }).notNull(),
@@ -183,6 +167,6 @@ export const verificationTokens = mysqlTable(
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   vt => ({
-    compoundKey: primaryKey(vt.identifier, vt.token),
+    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );

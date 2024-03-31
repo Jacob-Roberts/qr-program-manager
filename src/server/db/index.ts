@@ -1,12 +1,18 @@
 import { env } from "#/env";
-import { Client } from "@planetscale/database";
-import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { neon } from "@neondatabase/serverless";
+import { type NeonHttpClient, drizzle } from "drizzle-orm/neon-http";
 
 import * as schema from "./schema";
 
-export const db = drizzle(
-  new Client({
-    url: env.DATABASE_URL,
-  }).connection(),
-  { schema },
-);
+/**
+ * Cache the database connection in development. This avoids creating a new connection on every HMR
+ * update.
+ */
+const globalForDb = globalThis as unknown as {
+  conn: NeonHttpClient | undefined;
+};
+
+const conn = globalForDb.conn ?? neon(env.DATABASE_URL);
+if (env.NODE_ENV !== "production") globalForDb.conn = conn;
+
+export const db = drizzle(conn, { schema });
