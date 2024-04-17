@@ -1,6 +1,6 @@
 const config = {
   // Run type-check on changes to TypeScript files
-  "**/*.{ts,tsx}": () => "npm run type-check",
+  "**/*.{ts,tsx}": () => "bun run type-check",
   // Run ESLint on all Typescript/Javascript files
   "*.{js,jsx,ts,tsx}": "eslint --fix",
   // Run Prettier on all files

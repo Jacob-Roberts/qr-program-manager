@@ -21,24 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
+      - uses: oven-sh/setup-bun@v1
+        name: Setup Bun
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: 🐶 Remove Husky
-        run: pnpm pkg delete scripts.prepare
+      # - name: 🐶 Remove Husky
+      #   run: pnpm pkg delete scripts.prepare
 
       - name: 📥 Download deps
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
@@ -46,7 +38,7 @@ jobs:
       - name: 🔬 Lint
         env:
           SKIP_ENV_VALIDATION: true
-        run: pnpm run lint
+        run: bun run lint
 
   typecheck:
     name: ʦ TypeScript
@@ -55,25 +47,17 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
+      - uses: oven-sh/setup-bun@v1
+        name: Setup Bun
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: 🐶 Remove Husky
-        run: pnpm pkg delete scripts.prepare
+      # - name: 🐶 Remove Husky
+      #   run: pnpm pkg delete scripts.prepare
 
       - name: 📥 Download deps
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: 🔎 Type check
-        run: pnpm run type-check
+        run: bun run type-check
 
   vitest:
     name: ⚡ Vitest
@@ -82,25 +66,17 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
+      - uses: oven-sh/setup-bun@v1
+        name: Setup Bun
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - name: 🐶 Remove Husky
-        run: pnpm pkg delete scripts.prepare
+      # - name: 🐶 Remove Husky
+      #   run: pnpm pkg delete scripts.prepare
 
       - name: 📥 Download deps
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
 
       - name: ⚡ Run vitest
-        run: pnpm run test -- --coverage
+        run: bun run test -- --coverage

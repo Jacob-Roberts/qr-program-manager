@@ -31,10 +31,10 @@ export function AddNewProgram() {
     <Card
       className={cn(
         "group mx-auto flex h-[100px] max-w-2xl items-center justify-center border-2 border-dashed border-gray-300 hover:cursor-pointer hover:border-blue-400 dark:border-gray-600",
-        addNewProgramMutation.isLoading && "opacity-50",
+        addNewProgramMutation.isPending && "opacity-50",
       )}
       onClick={() => {
-        if (addNewProgramMutation.isLoading) return;
+        if (addNewProgramMutation.isPending) return;
         addNewProgramMutation.mutate();
       }}
     >
@@ -47,7 +47,7 @@ export function AddNewProgram() {
           name="plus"
           className="h-10 w-10 text-gray-300 group-hover:text-blue-400 dark:text-gray-600"
         />
-        {(addNewProgramMutation.isLoading || isPending) && (
+        {(addNewProgramMutation.isPending || isPending) && (
           <LoadingSpinner className="h-10 w-10 text-blue-400" />
         )}
       </CardContent>

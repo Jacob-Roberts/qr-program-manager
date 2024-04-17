@@ -60,7 +60,7 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (shareProgramMutation.isLoading) return;
+    if (shareProgramMutation.isPending) return;
 
     setMutationLoading(true);
 
@@ -76,7 +76,7 @@ export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {
     setMutationLoading(false);
   }
 
-  const shareLoading = shareProgramMutation.isLoading || mutationLoading;
+  const shareLoading = shareProgramMutation.isPending || mutationLoading;
 
   return (
     <Dialog>
@@ -188,7 +188,7 @@ function SharedRow({ share, refetchShare }: SharedRowProps) {
   const unshareProgramMutation = api.program.unshareProgram.useMutation();
   const [unshareRefetching, setUnshareRefetching] = useState(false);
 
-  const mutationLoading = unshareProgramMutation.isLoading || unshareRefetching;
+  const mutationLoading = unshareProgramMutation.isPending || unshareRefetching;
 
   return (
     <div className="flex flex-row gap-4">
@@ -248,7 +248,7 @@ function InvitedRow({ invite, refetchInvite }: InvitedRowProps) {
   const [uninviteRefetching, setUninviteRefetching] = useState(false);
 
   const mutationLoading =
-    uninviteProgramMutation.isLoading || uninviteRefetching;
+    uninviteProgramMutation.isPending || uninviteRefetching;
   return (
     <div className="flex flex-row gap-4">
       <Avatar>

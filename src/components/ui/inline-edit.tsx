@@ -297,6 +297,7 @@ const useButtonFocusHook = (
      * it is confirmed by wrapper blur
      */
     if (prevIsEditing && !shouldBeEditing) {
+      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
       if (preventFocusOnEditButtonRef && preventFocusOnEditButtonRef.current) {
         preventFocusOnEditButtonRef.current = false;
         // eslint-disable-next-line @typescript-eslint/prefer-optional-chain

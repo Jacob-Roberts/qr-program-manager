@@ -65,7 +65,7 @@ export function ExistingProgramCard({
     },
   });
 
-  const loading = deleteProgramMutation.isLoading || isLoading;
+  const loading = deleteProgramMutation.isPending || isLoading;
 
   // const utils = api.useUtils();
   const changeNameMutation = api.program.changeName.useMutation({

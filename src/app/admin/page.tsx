@@ -6,7 +6,7 @@ import { EditQRCode } from "./edit-qrcode.tsx";
 export default async function AdminPage() {
   noStore();
 
-  const programs = await api.program.getPrograms.query();
+  const programs = await api.program.getPrograms();
 
   return (
     <EditQRCode
