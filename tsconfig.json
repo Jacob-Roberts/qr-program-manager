@@ -16,13 +16,14 @@
     "checkJs": true,
 
     /* Bundled projects */
-    "lib": ["dom", "dom.iterable", "ES2022"],
+    "module": "preserve",
     "noEmit": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "jsx": "preserve",
     "plugins": [{ "name": "next" }],
     "incremental": true,
+    
+    /* The code runs in the DOM */
+    "lib": ["es2022", "dom", "dom.iterable"],
 
     /* Path Aliases */
     "baseUrl": ".",
