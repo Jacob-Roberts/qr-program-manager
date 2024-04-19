@@ -1,6 +1,6 @@
 import "server-only";
 
-import { type SendVerificationRequestParams } from "next-auth/providers/email";
+import type { SendVerificationRequestParams } from "next-auth/providers/email";
 import { Resend } from "resend";
 import { env } from "#/env";
 

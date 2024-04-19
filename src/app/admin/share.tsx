@@ -178,7 +178,7 @@ type SharedRowProps = {
     userName: string | null;
     userEmail: string | null;
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: TODO:
   refetchShare: () => Promise<any>;
 };
 
@@ -237,7 +237,7 @@ type InvitedRowProps = {
     programId: number;
     email: string;
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: TODO:
   refetchInvite: () => Promise<any>;
 };
 

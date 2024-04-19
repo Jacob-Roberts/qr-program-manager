@@ -21,7 +21,7 @@ export default async function AccountRequired({
     return notFound();
   }
 
-  const parsedProgramID = parseInt(programId, 10);
+  const parsedProgramID = Number.parseInt(programId, 10);
   if (Number.isNaN(parsedProgramID)) {
     return notFound();
   }

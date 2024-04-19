@@ -215,6 +215,7 @@ export function ExistingProgramCard({
             // Dummy button to keep the layout the same
             <div className="flex flex-col items-center justify-center gap-1">
               <button
+                type="button"
                 className="relative flex h-10 w-36 items-center justify-center overflow-hidden rounded-md bg-blue-400 text-gray-100 after:transition-[width] after:duration-500 focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2"
                 disabled
               >
@@ -258,6 +259,7 @@ export function ExistingProgramCard({
             target="_blank"
             href={`/${card.slug}`}
             className="rounded-lg bg-white p-4"
+            rel="noreferrer"
           >
             <QRCodeCanvas
               id={canvasID}

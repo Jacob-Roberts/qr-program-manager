@@ -1,6 +1,7 @@
 "use client";
 
-import React, {
+import type React from "react";
+import {
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -122,7 +123,7 @@ const InlineEdit = ({
     (
       isFieldInvalid: boolean,
       onSubmit: (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // biome-ignore lint/suspicious/noExplicitAny: I didn't write this code, and it works
         e?: React.BaseSyntheticEvent<object, any, any> | undefined,
       ) => Promise<void>,
     ) => {
@@ -151,7 +152,7 @@ const InlineEdit = ({
     (
       isFieldInvalid: boolean,
       onSubmit: (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // biome-ignore lint/suspicious/noExplicitAny: I didn't write this code, and it works
         e?: React.BaseSyntheticEvent<object, any, any> | undefined,
       ) => Promise<void>,
     ) => {
@@ -259,7 +260,7 @@ const InlineEdit = ({
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: I didn't write this code, and it works
 const usePrevious = (value: any) => {
   const ref = useRef();
 
@@ -296,10 +297,10 @@ const useButtonFocusHook = (
      * it is confirmed by wrapper blur
      */
     if (prevIsEditing && !shouldBeEditing) {
-      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+      // biome-ignore lint/complexity/useOptionalChain: I didn't write this code, and it works
       if (preventFocusOnEditButtonRef && preventFocusOnEditButtonRef.current) {
         preventFocusOnEditButtonRef.current = false;
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        // biome-ignore lint/complexity/useOptionalChain: I didn't write this code, and it works
       } else if (editButtonRef && editButtonRef.current) {
         editButtonRef.current.focus();
       }

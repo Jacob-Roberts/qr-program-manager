@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { type NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { getServerAuthSession } from "#/server/auth";
 import { db } from "#/server/db";
 import {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   if (!programId || !token) {
     return new Response("Invalid request", { status: 400 });
   }
-  const parsedProgramID = parseInt(programId, 10);
+  const parsedProgramID = Number.parseInt(programId, 10);
   if (Number.isNaN(parsedProgramID)) {
     return new Response("Invalid programId", { status: 400 });
   }

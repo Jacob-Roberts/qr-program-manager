@@ -164,6 +164,6 @@ async function writeIfChanged(filepath: string, newContent: string) {
     .catch(() => "");
   if (currentContent === newContent) return false;
   await fsExtra.writeFile(filepath, newContent, "utf8");
-  await $`@biomejs/biome format --write ${filepath}`;
+  await $`bunx @biomejs/biome format --write ${filepath}`;
   return true;
 }

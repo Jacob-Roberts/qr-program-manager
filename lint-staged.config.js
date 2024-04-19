@@ -1,8 +1,8 @@
 const config = {
   // Run type-check on changes to TypeScript files
   "**/*.{ts,tsx}": () => "bun run type-check",
-  // Run ESLint on all Typescript/Javascript files
-  "*.{js,jsx,ts,tsx}": "eslint --fix",
+  // Lint all Typescript/Javascript files
+  "*.{js,jsx,ts,tsx}": "bunx @biomejs/biome lint --apply",
   // Run biome format on all files
   "*.{js,jsx,ts,tsx,md,html,css}": "bunx @biomejs/biome format --write",
   // If you want to check that your tests work on every commit, then uncomment

@@ -1,4 +1,4 @@
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import { Icon } from "#/components/Icon";
 import { cn } from "#/lib/utils";
 import styles from "./authentication.module.css";
