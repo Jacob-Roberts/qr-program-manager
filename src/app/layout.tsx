@@ -1,14 +1,14 @@
 import "#/styles/globals.css";
 
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { Inter } from "next/font/google";
+import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "#/app/api/uploadthing/core";
 import { TailwindIndicator } from "#/components/tailwind-indicator";
 import { Toaster } from "#/components/ui/sonner";
 import { env } from "#/env";
 import { TRPCReactProvider } from "#/trpc/react";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import { Inter } from "next/font/google";
-import { extractRouterConfig } from "uploadthing/server";
 
 const inter = Inter({
   subsets: ["latin"],

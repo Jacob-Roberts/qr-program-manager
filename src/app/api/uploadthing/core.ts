@@ -1,10 +1,10 @@
-import { getServerAuthSession } from "#/server/auth";
-import { db } from "#/server/db";
-import { programs } from "#/server/db/schema";
 import { eq } from "drizzle-orm";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
 import { UTApi, UploadThingError } from "uploadthing/server";
 import { z } from "zod";
+import { getServerAuthSession } from "#/server/auth";
+import { db } from "#/server/db";
+import { programs } from "#/server/db/schema";
 
 const f = createUploadthing();
 

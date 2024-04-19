@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 // import { Button } from "#/components/ui/button";
 // import {
@@ -15,8 +17,6 @@ import {
   PopoverTrigger,
 } from "#/components/ui/popover";
 import { getServerAuthSession } from "#/server/auth";
-import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { Icon } from "./Icon";
 

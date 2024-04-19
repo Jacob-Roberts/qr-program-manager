@@ -1,4 +1,3 @@
-import { env } from "#/env";
 import {
   Body,
   Button,
@@ -17,6 +16,7 @@ import {
 } from "@react-email/components";
 import { Tailwind } from "@react-email/tailwind";
 import * as React from "react";
+import { env } from "#/env";
 
 interface InviteUserEmailProps {
   username?: string;

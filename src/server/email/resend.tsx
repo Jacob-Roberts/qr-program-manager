@@ -1,7 +1,8 @@
-import { env } from "#/env";
+import "server-only";
+
 import { type SendVerificationRequestParams } from "next-auth/providers/email";
 import { Resend } from "resend";
-import "server-only";
+import { env } from "#/env";
 
 import { MagicLinkAuthEmail } from "./magic-link-auth";
 

@@ -1,5 +1,5 @@
-import { api } from "#/trpc/server";
 import { unstable_noStore as noStore } from "next/cache";
+import { api } from "#/trpc/server";
 
 import { EditQRCode } from "./edit-qrcode.tsx";
 

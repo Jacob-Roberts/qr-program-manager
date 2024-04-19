@@ -1,8 +1,6 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.7.0/schema.json",
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
+  "files": {
     "ignore": [
       "tests/setup/setup-test-env.ts",
       "./node_modules",
@@ -22,6 +20,10 @@
       "**/tsconfig.json",
       "**/certificates"
     ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space"
   },
   "organizeImports": { "enabled": true },
   "linter": {

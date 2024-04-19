@@ -1,4 +1,3 @@
-import { env } from "#/env";
 import {
   Body,
   Button,
@@ -15,6 +14,7 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { env } from "#/env";
 
 interface MagicLinkAuthEmailProps {
   loginHref?: string;

@@ -1,9 +1,9 @@
-import { Button } from "#/components/ui/button";
-import { db } from "#/server/db";
-import { programShareInvites, programs } from "#/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Button } from "#/components/ui/button";
+import { db } from "#/server/db";
+import { programShareInvites, programs } from "#/server/db/schema";
 
 export default async function AccountRequired({
   searchParams,

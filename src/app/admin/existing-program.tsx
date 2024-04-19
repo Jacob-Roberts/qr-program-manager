@@ -1,7 +1,9 @@
 "use client";
 
-import styles from "./existing-program.module.css";
-
+import { Label } from "@radix-ui/react-label";
+import { useRouter } from "next/navigation";
+import { QRCodeCanvas } from "qrcode.react";
+import { useState, useTransition } from "react";
 import { Icon } from "#/components/Icon";
 import { LoadingSpinner } from "#/components/loading-spinner";
 import { Button } from "#/components/ui/button";
@@ -26,10 +28,7 @@ import { useDoubleCheck } from "#/lib/client-utils";
 import { cn } from "#/lib/utils";
 import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
-import { Label } from "@radix-ui/react-label";
-import { useRouter } from "next/navigation";
-import { QRCodeCanvas } from "qrcode.react";
-import { useState, useTransition } from "react";
+import styles from "./existing-program.module.css";
 
 import ShareWithFriends from "./share";
 

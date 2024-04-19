@@ -1,5 +1,9 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Icon } from "#/components/Icon";
 import { LoadingSpinner } from "#/components/loading-spinner";
 import {
@@ -33,10 +37,6 @@ import {
 import { Input } from "#/components/ui/input";
 import { useDoubleCheck } from "#/lib/client-utils";
 import { api } from "#/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 type ShareWithFriendsProps = {
   programId: number;

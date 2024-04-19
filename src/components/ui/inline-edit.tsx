@@ -1,10 +1,5 @@
 "use client";
 
-import styles from "./inline-edit.module.css";
-
-import { Icon } from "#/components/Icon";
-import { Button } from "#/components/ui/button";
-import { cn } from "#/lib/utils";
 import React, {
   useCallback,
   useEffect,
@@ -13,6 +8,10 @@ import React, {
   useState,
 } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { Icon } from "#/components/Icon";
+import { Button } from "#/components/ui/button";
+import { cn } from "#/lib/utils";
+import styles from "./inline-edit.module.css";
 
 type InlineEditProps = {
   startWithEditViewOpen?: boolean;

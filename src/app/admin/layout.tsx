@@ -1,7 +1,7 @@
-import { Icon } from "#/components/Icon";
-import { UserButton } from "#/components/user-button";
 import { unstable_noStore as noStore } from "next/cache";
 import React from "react";
+import { Icon } from "#/components/Icon";
+import { UserButton } from "#/components/user-button";
 
 export default async function AdminLayout({
   children,

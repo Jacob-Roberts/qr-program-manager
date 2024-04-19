@@ -1,9 +1,7 @@
-import styles from "./authentication.module.css";
-
+import { type Metadata } from "next";
 import { Icon } from "#/components/Icon";
 import { cn } from "#/lib/utils";
-import { type Metadata } from "next";
-
+import styles from "./authentication.module.css";
 import { UserAuthForm } from "./user-auth-form";
 
 export const metadata: Metadata = {

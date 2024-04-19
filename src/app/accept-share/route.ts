@@ -1,3 +1,6 @@
+import { and, eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
+import { type NextRequest } from "next/server";
 import { getServerAuthSession } from "#/server/auth";
 import { db } from "#/server/db";
 import {
@@ -5,9 +8,6 @@ import {
   programs,
   programsShares,
 } from "#/server/db/schema";
-import { and, eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
-import { type NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 

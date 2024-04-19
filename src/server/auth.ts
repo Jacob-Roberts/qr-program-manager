@@ -1,6 +1,3 @@
-import { env } from "#/env";
-import { db } from "#/server/db";
-import { createTable } from "#/server/db/schema";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {
   type DefaultSession,
@@ -11,6 +8,9 @@ import { type Adapter } from "next-auth/adapters";
 // import AppleProvider from "next-auth/providers/apple";
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
+import { env } from "#/env";
+import { db } from "#/server/db";
+import { createTable } from "#/server/db/schema";
 
 import { sendVerificationRequest } from "./email/resend";
 

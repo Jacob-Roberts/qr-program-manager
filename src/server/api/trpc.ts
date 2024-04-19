@@ -6,12 +6,13 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { getServerAuthSession } from "#/server/auth";
-import { db } from "#/server/db";
-import { resend } from "#/server/email/resend";
+
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { getServerAuthSession } from "#/server/auth";
+import { db } from "#/server/db";
+import { resend } from "#/server/email/resend";
 
 /**
  * 1. CONTEXT

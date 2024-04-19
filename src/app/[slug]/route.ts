@@ -1,6 +1,6 @@
+import { eq } from "drizzle-orm";
 import { db } from "#/server/db";
 import { programs } from "#/server/db/schema";
-import { eq } from "drizzle-orm";
 
 import { utapi } from "../api/uploadthing/core";
 
