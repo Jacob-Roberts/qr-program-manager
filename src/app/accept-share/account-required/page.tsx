@@ -64,7 +64,9 @@ export default async function AccountRequired({
             asChild
           >
             <Link
-              href={`/api/auth/signin?callbackUrl=${encodeURIComponent(`/accept-share?programId=${programId}&token=${token}`)}`}
+              href={`/api/auth/signin?callbackUrl=${encodeURIComponent(
+                `/accept-share?programId=${programId}&token=${token}`,
+              )}`}
             >
               Click here to get started
             </Link>

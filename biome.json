@@ -1,0 +1,35 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.7.0/schema.json",
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "ignore": [
+      "tests/setup/setup-test-env.ts",
+      "./node_modules",
+      "**/bun.lockb",
+      "./coverage",
+      "./.next/",
+      "./out/",
+      "**/next-env.d.ts",
+      "./build",
+      "**/.DS_Store",
+      "**/*.pem",
+      "**/npm-debug.log*",
+      "**/.env",
+      "**/.env*.local",
+      "**/.vercel",
+      "**/*.tsbuildinfo",
+      "**/tsconfig.json",
+      "**/certificates"
+    ]
+  },
+  "organizeImports": { "enabled": true },
+  "linter": {
+    "enabled": false
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "asNeeded"
+    }
+  }
+}
