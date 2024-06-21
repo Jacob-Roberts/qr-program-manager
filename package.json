@@ -71,7 +71,8 @@
   "devDependencies": {
     "@biomejs/biome": "1.8.2",
     "@sly-cli/sly": "1.10.0",
-    "@testing-library/react": "15.0.7",
+    "@testing-library/react": "16.0.0",
+    "@testing-library/dom": "10.1.0",
     "@types/fs-extra": "11.0.4",
     "@types/node": "20",
     "@types/react": "18",
