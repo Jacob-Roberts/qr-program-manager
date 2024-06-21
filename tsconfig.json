@@ -8,28 +8,35 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
 
     /* Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "checkJs": true,
+    "noImplicitOverride": true,
 
-    /* Bundled projects */
+    /* If NOT transpiling with TypeScript: */
     "module": "preserve",
     "noEmit": true,
-    "jsx": "preserve",
-    "plugins": [{ "name": "next" }],
-    "incremental": true,
-    
-    /* The code runs in the DOM */
+
+    /* If your code runs in the DOM: */
     "lib": ["es2022", "dom", "dom.iterable"],
 
-    /* Path Aliases */
+    /* Jake Specific Overrides */
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "allowImportingTsExtensions": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "baseUrl": ".",
     "paths": {
-      "#/*": ["./src/*"],
-    },
+      "#/*": ["./src/*"]
+    }
   },
   "include": [
     "next-env.d.ts",
