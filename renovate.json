@@ -8,6 +8,6 @@
       "automerge": true
     }
   ],
-  "stabilityDays": 3,
+  "minimumReleaseAge": "7 days",
   "prCreation": "not-pending"
 }
