@@ -53,7 +53,8 @@
         "useAwait": "off",
         "useNamespaceKeyword": "error"
       }
-    }
+    },
+    "ignore": ["e2e/tests-examples/demo-todo-app.spec.ts"]
   },
   "overrides": [
     {
