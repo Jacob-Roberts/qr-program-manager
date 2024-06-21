@@ -43,6 +43,9 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_DEPLOY_URL: z.string().url(),
+    NEXT_PUBLIC_PLAUSIBLE_DOMAIN: z.string().min(1),
+    NEXT_PUBLIC_PLAUSIBLE_CUSTOM_DOMAIN: z.string().min(1),
+    NEXT_PUBLIC_PLAUSIBLE_SELF_HOSTED: z.boolean({ coerce: true }),
   },
 
   /**
@@ -65,6 +68,11 @@ export const env = createEnv({
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    NEXT_PUBLIC_PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
+    NEXT_PUBLIC_PLAUSIBLE_CUSTOM_DOMAIN:
+      process.env.NEXT_PUBLIC_PLAUSIBLE_CUSTOM_DOMAIN,
+    NEXT_PUBLIC_PLAUSIBLE_SELF_HOSTED:
+      process.env.NEXT_PUBLIC_PLAUSIBLE_SELF_HOSTED,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
