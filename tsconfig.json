@@ -44,7 +44,10 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "e2e/tests-examples/demo-todo-app.spec.ts"],
+  "exclude": [
+    "node_modules",
+    "e2e" // e2e will be handled seperately
+  ]
 }

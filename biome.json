@@ -17,7 +17,6 @@
       "**/.env*.local",
       "**/.vercel",
       "**/*.tsbuildinfo",
-      "**/tsconfig.json",
       "**/certificates"
     ]
   },
@@ -54,7 +53,10 @@
         "useNamespaceKeyword": "error"
       }
     },
-    "ignore": ["e2e/tests-examples/demo-todo-app.spec.ts"]
+    "ignore": [
+      "e2e/tests-examples/demo-todo-app.spec.ts",
+      "tests-examples/demo-todo-app.spec.ts"
+    ]
   },
   "overrides": [
     {
@@ -120,6 +122,15 @@
             "noUnsafeNegation": "off",
             "useGetterReturn": "off"
           }
+        }
+      }
+    },
+    {
+      "include": ["**/tsconfig.json"],
+      "json": {
+        "parser": {
+          "allowComments": true,
+          "allowTrailingCommas": true
         }
       }
     }

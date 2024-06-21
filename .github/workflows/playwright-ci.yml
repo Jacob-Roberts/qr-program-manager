@@ -5,6 +5,50 @@ on:
   pull_request:
     branches: [main]
 jobs:
+  lint:
+    name: ⬣ Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            e2e
+            biome.json
+
+      - uses: oven-sh/setup-bun@v1
+        name: Setup Bun
+      
+      - name: 📥 Download deps
+        working-directory: ./e2e
+        run: bun install --frozen-lockfile
+
+      - name: 🔬 Lint
+        working-directory: ./e2e
+        run: bun run lint
+
+  typecheck:
+    name: ʦ TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            e2e
+            tsconfig.json
+
+      - uses: oven-sh/setup-bun@v1
+        name: Setup Bun
+      
+      - name: 📥 Download deps
+        working-directory: ./e2e
+        run: bun install --frozen-lockfile
+
+      - name: 🔎 Type check
+        working-directory: ./e2e
+        run: bun run type-check
+
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest

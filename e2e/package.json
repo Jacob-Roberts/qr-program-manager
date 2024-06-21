@@ -1,14 +1,20 @@
 {
   "name": "e2e",
   "version": "1.0.0",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
   "scripts": {
-    "test:e2e": "playwright test"
+    "test": "playwright test",
+    "format": "bunx @biomejs/biome format --write .",
+    "lint": "bunx @biomejs/biome lint . --config-path=../biome.json",
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.2",
     "@playwright/test": "^1.44.1",
-    "@types/node": "^20.14.7"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5"
+    "@types/node": "^20.14.7",
+    "dotenv": "^16.4.5",
+    "typescript": "5.5.2"
   }
 }
