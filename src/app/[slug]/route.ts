@@ -38,10 +38,10 @@ export async function GET(request: Request, { params }: GetParams) {
   try {
     const uploadThingRes = await utapi.getFileUrls([file[0].fileUploadId]);
 
-    if (!uploadThingRes?.[0]?.url) {
+    if (!uploadThingRes.data?.[0]?.url) {
       throw new Error("No URL");
     }
-    url = uploadThingRes[0].url;
+    url = uploadThingRes.data?.[0].url;
   } catch (e) {
     console.log(e);
     return new Response(notFoundBody, {
