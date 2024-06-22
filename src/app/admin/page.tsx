@@ -24,15 +24,18 @@ export default async function AdminPage() {
 }
 
 function formatDate(date: string | Date) {
+  let dateString = "";
   if (date instanceof Date) {
-    date = date.toISOString();
+    dateString = date.toISOString();
+  } else {
+    dateString = date;
   }
   noStore();
   const currentDate = new Date();
-  if (!date.includes("T")) {
-    date = `${date}T00:00:00`;
+  if (!dateString.includes("T")) {
+    dateString = `${dateString}T00:00:00`;
   }
-  const targetDate = new Date(date);
+  const targetDate = new Date(dateString);
 
   const yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
   const monthsAgo = currentDate.getMonth() - targetDate.getMonth();

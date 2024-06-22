@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Icon } from "#/components/Icon";
 import { UserButton } from "#/components/user-button";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: ReactNode;

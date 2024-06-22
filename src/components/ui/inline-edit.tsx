@@ -288,7 +288,7 @@ const useButtonFocusHook = (
     if (isEditingState && editViewRef.current) {
       editViewRef.current.focus();
     }
-  }, [editViewRef, isEditingState]);
+  }, [isEditingState]);
 
   useEffect(() => {
     /**
@@ -308,7 +308,7 @@ const useButtonFocusHook = (
   }, [prevIsEditing, shouldBeEditing]);
 
   const doNotFocusOnEditButton = () =>
-    (preventFocusOnEditButtonRef.current = true);
+    preventFocusOnEditButtonRef.current === true;
 
   return {
     editButtonRef,
@@ -417,6 +417,7 @@ const ReadView = ({
         onClick={onEditRequested}
         ref={editButtonRef}
       />
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: not my code */}
       <div
         className={cn(
           "transition-background box-border inline-block w-auto max-w-full rounded-[3px] duration-200 hover:bg-[#EBECF0] group-focus:border-2 group-focus:border-[#4c9aff]",

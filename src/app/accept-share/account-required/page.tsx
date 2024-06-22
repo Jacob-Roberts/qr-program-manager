@@ -8,7 +8,7 @@ import { programShareInvites, programs } from "#/server/db/schema";
 export default async function AccountRequired({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Record<string, string | Array<string> | undefined>;
 }) {
   const programId = searchParams.programId;
   const token = searchParams.token;

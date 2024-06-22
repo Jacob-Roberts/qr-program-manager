@@ -9,7 +9,7 @@ import {
 } from "./existing-program";
 
 type EditQRCodeProps = {
-  programs: ExistingProgramCardProps[];
+  programs: Array<ExistingProgramCardProps>;
 };
 
 export async function EditQRCode({ programs }: EditQRCodeProps) {

@@ -15,8 +15,11 @@ const getQueryClient = () => {
     // Server: always make a new query client
     return createQueryClient();
   }
+  if (typeof clientQueryClientSingleton === "undefined") {
+    clientQueryClientSingleton = createQueryClient();
+  }
   // Browser: use singleton pattern to keep the same query client
-  return (clientQueryClientSingleton ??= createQueryClient());
+  return clientQueryClientSingleton;
 };
 
 export const api = createTRPCReact<AppRouter>();
