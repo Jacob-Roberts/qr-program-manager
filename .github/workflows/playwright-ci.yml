@@ -16,12 +16,12 @@ jobs:
             e2e
             biome.json
 
-      - uses: oven-sh/setup-bun@v1
-        name: Setup Bun
+      - name: ⎔ Setup Bun
+        uses: oven-sh/setup-bun@v1
       
       - name: 📥 Download deps
         working-directory: ./e2e
-        run: bun install --frozen-lockfile
+        run: bun install --ignore-scripts --frozen-lockfile
 
       - name: 🔬 Lint
         working-directory: ./e2e
@@ -38,12 +38,12 @@ jobs:
             e2e
             tsconfig.json
 
-      - uses: oven-sh/setup-bun@v1
-        name: Setup Bun
+      - name: ⎔ Setup Bun
+        uses: oven-sh/setup-bun@v1
       
       - name: 📥 Download deps
         working-directory: ./e2e
-        run: bun install --frozen-lockfile
+        run: bun install --ignore-scripts --frozen-lockfile
 
       - name: 🔎 Type check
         working-directory: ./e2e
@@ -62,12 +62,12 @@ jobs:
         with:
           sparse-checkout: e2e
 
-      - uses: oven-sh/setup-bun@v1
-        name: Setup Bun
-
+      - name: ⎔ Setup Bun
+        uses: oven-sh/setup-bun@v1
+        
       - name: 📥 Download deps
         working-directory: ./e2e
-        run: bun install --frozen-lockfile
+        run: bun install --ignore-scripts --frozen-lockfile
 
       - name: 🎭 Install Playwright Browsers
         working-directory: ./e2e

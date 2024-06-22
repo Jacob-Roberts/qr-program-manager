@@ -23,14 +23,11 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v1
-        name: Setup Bun
-
-      # - name: 🐶 Remove Husky
-      #   run: pnpm pkg delete scripts.prepare
+      - name: ⎔ Setup Bun
+        uses: oven-sh/setup-bun@v1
 
       - name: 📥 Download deps
-        run: bun install --frozen-lockfile
+        run: bun install --ignore-scripts --frozen-lockfile
 
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
@@ -47,14 +44,11 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v1
-        name: Setup Bun
-
-      # - name: 🐶 Remove Husky
-      #   run: pnpm pkg delete scripts.prepare
+      - name: ⎔ Setup Bun
+        uses: oven-sh/setup-bun@v1
 
       - name: 📥 Download deps
-        run: bun install --frozen-lockfile
+        run: bun install --ignore-scripts --frozen-lockfile
 
       - name: 🔎 Type check
         run: bun run type-check
@@ -66,14 +60,11 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v1
-        name: Setup Bun
-
-      # - name: 🐶 Remove Husky
-      #   run: pnpm pkg delete scripts.prepare
+      - name: ⎔ Setup Bun
+        uses: oven-sh/setup-bun@v1
 
       - name: 📥 Download deps
-        run: bun install --frozen-lockfile
+        run: bun install --ignore-scripts --frozen-lockfile
 
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
