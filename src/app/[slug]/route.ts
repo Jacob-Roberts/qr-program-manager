@@ -5,6 +5,7 @@ import { programs } from "#/server/db/schema";
 import { utapi } from "../api/uploadthing/core";
 
 export const dynamic = "force-dynamic"; // defaults to auto
+export const runtime = "nodejs";
 
 type GetParams = {
   params: {
