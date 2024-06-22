@@ -50,6 +50,7 @@ jobs:
         run: bun run type-check
 
   test:
+    name: 🎭 Playwright Test
     timeout-minutes: 60
     runs-on: ubuntu-latest
     permissions:
