@@ -50,18 +50,28 @@ export async function GET(request: Request, { params }: GetParams) {
     });
   }
 
-  // use fetch to get a response
-  const response = await fetch(url);
+  console.log("Jake", url);
 
-  // return a new response and use 'content-disposition' to open in the browser
-  return new Response(response.body, {
-    headers: {
-      ...response.headers, // copy the previous headers
-      "content-disposition": `inline; filename="${
-        file[0].fileUploadName || file[0].slug
-      }"`,
-    },
-  });
+  try {
+    // use fetch to get a response
+    const response = await fetch(url);
+
+    // return a new response and use 'content-disposition' to open in the browser
+    return new Response(response.body, {
+      headers: {
+        ...response.headers, // copy the previous headers
+        "content-disposition": `inline; filename="${
+          file[0].fileUploadName || file[0].slug
+        }"`,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response(somethingWentWrongBody, {
+      status: 500,
+      headers: { "Content-Type": "text/html" },
+    });
+  }
 }
 
 const notFoundBody = `
@@ -156,6 +166,54 @@ const notUploadedYetBody = `
     <div class="container">
         <h1>404 Not Found</h1>
         <p>A file hasn't been uploaded to this QR code yet.</p>
+        <p>Go back to <a href="/">homepage</a>.</p>
+    </div>
+</body>
+</html>
+`;
+
+const somethingWentWrongBody = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4em;
+            color: #343a40;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #6c757d;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Something unexpected happened</h1>
         <p>Go back to <a href="/">homepage</a>.</p>
     </div>
 </body>
