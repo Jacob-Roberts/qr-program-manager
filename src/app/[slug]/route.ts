@@ -5,6 +5,7 @@ import { programs } from "#/server/db/schema";
 import { utapi } from "../api/uploadthing/core";
 
 export const dynamic = "force-dynamic"; // defaults to auto
+export const runtime = "nodejs";
 
 type GetParams = {
   params: {
@@ -50,18 +51,46 @@ export async function GET(request: Request, { params }: GetParams) {
     });
   }
 
-  // use fetch to get a response
-  const response = await fetch(url);
+  try {
+    // use fetch to get a response
+    const response = await fetch(url);
 
-  // return a new response and use 'content-disposition' to open in the browser
-  return new Response(response.body, {
-    headers: {
-      ...response.headers, // copy the previous headers
+    // Clone the response to ensure the stream is not locked
+    const clonedResponse = response.clone();
+
+    const h = clonedResponse.headers;
+    // Convert Headers object to a plain object
+    const headers: Record<string, string> = {
       "content-disposition": `inline; filename="${
         file[0].fileUploadName || file[0].slug
       }"`,
-    },
-  });
+    };
+
+    addHeader(headers, h, "Age");
+    addHeader(headers, h, "cache-control");
+    addHeader(headers, h, "Content-Length");
+    addHeader(headers, h, "Content-Type");
+    addHeader(headers, h, "etag");
+    addHeader(headers, h, "Last-Modified");
+
+    // return a new response and use 'content-disposition' to open in the browser
+    return new Response(clonedResponse.body, {
+      headers: headers,
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response(somethingWentWrongBody, {
+      status: 500,
+      headers: { "Content-Type": "text/html" },
+    });
+  }
+}
+
+function addHeader(res: Record<string, string>, h: Headers, key: string) {
+  const j = h.get(key); // this is case insensitive
+  if (j !== null) {
+    res[key] = j;
+  }
 }
 
 const notFoundBody = `
@@ -156,6 +185,54 @@ const notUploadedYetBody = `
     <div class="container">
         <h1>404 Not Found</h1>
         <p>A file hasn't been uploaded to this QR code yet.</p>
+        <p>Go back to <a href="/">homepage</a>.</p>
+    </div>
+</body>
+</html>
+`;
+
+const somethingWentWrongBody = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 Internal Server Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4em;
+            color: #343a40;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #6c757d;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Something unexpected happened</h1>
         <p>Go back to <a href="/">homepage</a>.</p>
     </div>
 </body>
