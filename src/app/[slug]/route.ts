@@ -51,8 +51,6 @@ export async function GET(request: Request, { params }: GetParams) {
     });
   }
 
-  console.log("Jake", url);
-
   try {
     // use fetch to get a response
     const response = await fetch(url);
@@ -60,24 +58,24 @@ export async function GET(request: Request, { params }: GetParams) {
     // Clone the response to ensure the stream is not locked
     const clonedResponse = response.clone();
 
+    const h = clonedResponse.headers;
     // Convert Headers object to a plain object
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const headers: any = {};
-    clonedResponse.headers.forEach((value, key) => {
-      headers[key] = value;
-    });
+    const headers: Record<string, string> = {
+      "content-disposition": `inline; filename="${
+        file[0].fileUploadName || file[0].slug
+      }"`,
+    };
 
-    // Log headers to debug
-    console.log([...clonedResponse.headers.entries()]);
+    addHeader(headers, h, "Age");
+    addHeader(headers, h, "cache-control");
+    addHeader(headers, h, "Content-Length");
+    addHeader(headers, h, "Content-Type");
+    addHeader(headers, h, "etag");
+    addHeader(headers, h, "Last-Modified");
 
     // return a new response and use 'content-disposition' to open in the browser
     return new Response(clonedResponse.body, {
-      headers: {
-        ...headers, // copy the previous headers
-        "content-disposition": `inline; filename="${
-          file[0].fileUploadName || file[0].slug
-        }"`,
-      },
+      headers: headers,
     });
   } catch (error) {
     console.error(error);
@@ -85,6 +83,13 @@ export async function GET(request: Request, { params }: GetParams) {
       status: 500,
       headers: { "Content-Type": "text/html" },
     });
+  }
+}
+
+function addHeader(res: Record<string, string>, h: Headers, key: string) {
+  const j = h.get(key); // this is case insensitive
+  if (j !== null) {
+    res[key] = j;
   }
 }
 
@@ -192,7 +197,7 @@ const somethingWentWrongBody = `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Not Found</title>
+    <title>500 Internal Server Error</title>
     <style>
         body {
             font-family: Arial, sans-serif;
