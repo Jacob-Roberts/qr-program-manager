@@ -60,10 +60,20 @@ export async function GET(request: Request, { params }: GetParams) {
     // Clone the response to ensure the stream is not locked
     const clonedResponse = response.clone();
 
+    // Convert Headers object to a plain object
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    const headers: any = {};
+    clonedResponse.headers.forEach((value, key) => {
+      headers[key] = value;
+    });
+
+    // Log headers to debug
+    console.log([...clonedResponse.headers.entries()]);
+
     // return a new response and use 'content-disposition' to open in the browser
     return new Response(clonedResponse.body, {
       headers: {
-        ...clonedResponse.headers, // copy the previous headers
+        ...headers, // copy the previous headers
         "content-disposition": `inline; filename="${
           file[0].fileUploadName || file[0].slug
         }"`,
