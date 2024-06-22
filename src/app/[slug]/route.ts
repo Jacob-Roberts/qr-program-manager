@@ -57,10 +57,13 @@ export async function GET(request: Request, { params }: GetParams) {
     // use fetch to get a response
     const response = await fetch(url);
 
+    // Clone the response to ensure the stream is not locked
+    const clonedResponse = response.clone();
+
     // return a new response and use 'content-disposition' to open in the browser
-    return new Response(response.body, {
+    return new Response(clonedResponse.body, {
       headers: {
-        ...response.headers, // copy the previous headers
+        ...clonedResponse.headers, // copy the previous headers
         "content-disposition": `inline; filename="${
           file[0].fileUploadName || file[0].slug
         }"`,
