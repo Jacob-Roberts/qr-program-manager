@@ -16,7 +16,8 @@
       "**/.env*.local",
       "**/.vercel",
       "**/*.tsbuildinfo",
-      "**/certificates"
+      "**/certificates",
+      "**/playwright-report"
     ]
   },
   "formatter": {
