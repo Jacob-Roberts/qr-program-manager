@@ -3,6 +3,8 @@
   "include": ["**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.js"],
   "exclude": [
     "node_modules",
-    "tests-examples/demo-todo-app.spec.ts" // I didn't write this
+    "tests-examples/demo-todo-app.spec.ts", // I didn't write this
+    "playwright-report",
+    "test-results"
   ]
 }

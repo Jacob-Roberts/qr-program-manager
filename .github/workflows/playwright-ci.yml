@@ -65,7 +65,7 @@ jobs:
 
       - name: ⎔ Setup Bun
         uses: oven-sh/setup-bun@v1
-        
+
       - name: 📥 Download deps
         working-directory: ./e2e
         run: bun install --ignore-scripts --frozen-lockfile

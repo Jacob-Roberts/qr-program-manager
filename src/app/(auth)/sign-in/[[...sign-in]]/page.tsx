@@ -19,7 +19,6 @@ export default function AuthenticationPage() {
             styles.wrapper,
           )}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/login-pattern.svg"
             alt="Pattern Background"
