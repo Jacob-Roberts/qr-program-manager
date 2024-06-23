@@ -48,6 +48,7 @@
   ],
   "exclude": [
     "node_modules",
-    "e2e" // e2e will be handled seperately
+    "e2e", // e2e will be handled seperately
+    "coverage"
   ]
 }

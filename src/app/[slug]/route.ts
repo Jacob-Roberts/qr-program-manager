@@ -13,7 +13,7 @@ type GetParams = {
   };
 };
 
-export async function GET(request: Request, { params }: GetParams) {
+export async function GET(_request: Request, { params }: GetParams) {
   // The Program ID Slug that we want to download
   const slug = params.slug;
 

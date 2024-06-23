@@ -110,7 +110,7 @@ async function generateSvgSprite({
   inputDir,
   outputPath,
 }: {
-  files: string[];
+  files: Array<string>;
   inputDir: string;
   outputPath: string;
 }) {

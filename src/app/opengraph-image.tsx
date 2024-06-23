@@ -37,6 +37,7 @@ export default async function Image() {
         fontWeight: 600,
       }}
     >
+      {/* biome-ignore lint/a11y/noSvgWithoutTitle: OpenGraph */}
       <svg
         width="200"
         height="200"

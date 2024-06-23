@@ -4,9 +4,7 @@ import type { Meta } from "@sly-cli/sly";
  * @type {import('@sly-cli/sly/dist').Transformer}
  */
 export default function transformIcon(input: string, meta: Meta) {
-  input = prependLicenseInfo(input, meta);
-
-  return input;
+  return prependLicenseInfo(input, meta);
 }
 
 function prependLicenseInfo(input: string, meta: Meta): string {

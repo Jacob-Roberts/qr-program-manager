@@ -57,6 +57,7 @@ export function Icon({
     );
   }
   return (
+    // biome-ignore lint/a11y/noSvgWithoutTitle: generic icon with no name
     <svg
       {...props}
       className={cn(sizeClassName[size], "inline self-center", className)}

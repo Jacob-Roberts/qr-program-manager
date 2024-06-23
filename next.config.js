@@ -37,6 +37,7 @@ const nextConfig = {
     /// Set this to false if you want production builds to abort if there's lint errors
     ignoreDuringBuilds: true,
   },
+  // biome-ignore lint/suspicious/useAwait: lib requires async
   async headers() {
     return [
       {
