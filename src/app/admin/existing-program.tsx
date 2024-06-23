@@ -158,7 +158,6 @@ export function ExistingProgramCard({
                 <Input
                   className="mb-2 mt-[2px] h-10 text-2xl"
                   type="text"
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   disabled={disabled || isChangingName}
                   name={name}
                   onBlur={onBlur}
@@ -242,7 +241,6 @@ export function ExistingProgramCard({
               }}
               onUploadError={error => {
                 //@ts-expect-error upload thing error types are wrong
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 if (error.cause?.data?.message === "File too large") {
                   setError("File is too large");
                 } else {
@@ -281,11 +279,9 @@ export function ExistingProgramCard({
             }
 
             //@ts-expect-error toDataURL
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
             const url = qrCodeCanvas.toDataURL("image/png");
             const link = document.createElement("a");
             link.download = `${card.slug}.png`;
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             link.href = url;
             link.click();
           }}

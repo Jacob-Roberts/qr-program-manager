@@ -265,7 +265,6 @@ const usePrevious = (value: any) => {
   const ref = useRef();
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     ref.current = value;
   }, [value]);
 
