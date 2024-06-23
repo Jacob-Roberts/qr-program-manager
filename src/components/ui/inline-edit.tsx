@@ -307,8 +307,9 @@ const useButtonFocusHook = (
     }
   }, [prevIsEditing, shouldBeEditing]);
 
-  const doNotFocusOnEditButton = () =>
-    preventFocusOnEditButtonRef.current === true;
+  const doNotFocusOnEditButton = () => {
+    preventFocusOnEditButtonRef.current = true;
+  };
 
   return {
     editButtonRef,
