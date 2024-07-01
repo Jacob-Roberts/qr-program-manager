@@ -17,7 +17,7 @@ jobs:
             biome.json
 
       - name: ⎔ Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
       
       - name: 📥 Download deps
         working-directory: ./e2e
@@ -39,7 +39,7 @@ jobs:
             tsconfig.json
 
       - name: ⎔ Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
       
       - name: 📥 Download deps
         working-directory: ./e2e
@@ -64,7 +64,7 @@ jobs:
           sparse-checkout: e2e
 
       - name: ⎔ Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: 📥 Download deps
         working-directory: ./e2e
