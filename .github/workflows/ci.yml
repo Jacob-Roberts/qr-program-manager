@@ -25,6 +25,8 @@ jobs:
 
       - name: ⎔ Setup Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: 📥 Download deps
         run: bun install --ignore-scripts --frozen-lockfile
@@ -46,6 +48,8 @@ jobs:
 
       - name: ⎔ Setup Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: 📥 Download deps
         run: bun install --ignore-scripts --frozen-lockfile
@@ -62,6 +66,8 @@ jobs:
 
       - name: ⎔ Setup Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: 📥 Download deps
         run: bun install --ignore-scripts --frozen-lockfile
