@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: ⎔ Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: 📥 Download deps
         run: bun install --ignore-scripts --frozen-lockfile
@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: ⎔ Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: 📥 Download deps
         run: bun install --ignore-scripts --frozen-lockfile
@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: ⎔ Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: 📥 Download deps
         run: bun install --ignore-scripts --frozen-lockfile
