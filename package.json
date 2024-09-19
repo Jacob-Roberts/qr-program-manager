@@ -27,7 +27,7 @@
     "@auth/drizzle-adapter": "1.4.2",
     "@hookform/resolvers": "3.9.0",
     "@neondatabase/serverless": "0.9.5",
-    "@next/env": "14.2.9",
+    "@next/env": "14.2.10",
     "@radix-ui/react-alert-dialog": "1.1.1",
     "@radix-ui/react-avatar": "1.1.0",
     "@radix-ui/react-dialog": "1.1.1",
