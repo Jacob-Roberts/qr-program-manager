@@ -1,11 +1,6 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "next/typescript"
-  ],
-  "plugins": [
-    "eslint-plugin-react-compiler"
-  ],
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "plugins": ["eslint-plugin-react-compiler"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-empty-object-type": "off",
