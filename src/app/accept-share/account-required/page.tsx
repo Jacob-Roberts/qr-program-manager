@@ -5,11 +5,10 @@ import { Button } from "#/components/ui/button";
 import { db } from "#/server/db";
 import { programShareInvites, programs } from "#/server/db/schema";
 
-export default async function AccountRequired({
-  searchParams,
-}: {
-  searchParams: Record<string, string | Array<string> | undefined>;
+export default async function AccountRequired(props: {
+  searchParams: Promise<Record<string, string | Array<string> | undefined>>;
 }) {
+  const searchParams = await props.searchParams;
   const programId = searchParams.programId;
   const token = searchParams.token;
 
