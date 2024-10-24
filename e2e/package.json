@@ -12,7 +12,7 @@
     "type-check": "tsc --project tsconfig.json --pretty --noEmit"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
+    "@biomejs/biome": "1.9.4",
     "@playwright/test": "1.48.1",
     "@types/node": "20.16.12",
     "dotenv": "16.4.5",
