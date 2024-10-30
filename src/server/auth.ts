@@ -75,6 +75,7 @@ const authOptions: NextAuthConfig = {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     Resend({
+      id: "email",
       from: "QR Program Manager <noreply@accounts.jakerob.pro>",
       apiKey: env.RESEND_API_KEY,
       sendVerificationRequest: sendVerificationRequest,
