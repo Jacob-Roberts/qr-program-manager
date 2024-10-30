@@ -1,9 +1,9 @@
 "use client";
 
-import { Label } from "@radix-ui/react-label";
+import type { DropdownMenuTriggerProps } from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
-import { useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { Icon } from "#/components/Icon";
 import { LoadingSpinner } from "#/components/loading-spinner";
 import { Button } from "#/components/ui/button";
@@ -15,6 +15,12 @@ import {
   CardHeader,
   CardTitle,
 } from "#/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "#/components/ui/dropdown-menu";
 import { InlineEdit } from "#/components/ui/inline-edit";
 import { Input } from "#/components/ui/input";
 import {
@@ -28,6 +34,7 @@ import { useDoubleCheck } from "#/lib/client-utils";
 import { cn } from "#/lib/utils";
 import { api } from "#/trpc/react";
 import { UploadButton } from "#/utils/uploadthing";
+import { Label } from "#components/ui/label.tsx";
 import styles from "./existing-program.module.css";
 
 import ShareWithFriends from "./share";
@@ -262,32 +269,15 @@ export function ExistingProgramCard({
             <QRCodeCanvas
               id={canvasID}
               size={256}
+              title={`${card.name} QR Code`}
+              level="L"
               value={`${env.NEXT_PUBLIC_DEPLOY_URL}/${card.slug}`}
             />
           </a>
         </div>
       </CardContent>
       <CardFooter className="mt-auto justify-between">
-        <Button
-          variant="outline"
-          size="icon"
-          className=""
-          onClick={() => {
-            const qrCodeCanvas = document.getElementById(canvasID);
-            if (qrCodeCanvas === null) {
-              return;
-            }
-
-            //@ts-expect-error toDataURL
-            const url = qrCodeCanvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.download = `${card.slug}.png`;
-            link.href = url;
-            link.click();
-          }}
-        >
-          <Icon name="download" />
-        </Button>
+        <DownloadImageButton canvasID={canvasID} cardSlug={card.slug} />
         {enableShareWithFriends ? (
           <ShareWithFriends programId={card.id} />
         ) : null}
@@ -322,5 +312,76 @@ export function ExistingProgramCard({
         </Button>
       </CardFooter>
     </Card>
+  );
+}
+
+interface DownloadImageButtonProps extends DropdownMenuTriggerProps {
+  canvasID: string;
+  cardSlug: string;
+}
+
+export function DownloadImageButton({
+  canvasID,
+  cardSlug,
+  className,
+  ...props
+}: DownloadImageButtonProps) {
+  const [hasCopied, setHasCopied] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setHasCopied(false);
+    }, 2000);
+  }, []);
+
+  const downloadCommand = useCallback(
+    (type: "svg" | "png") => {
+      // TODO:
+      if (type === "png") {
+        const qrCodeCanvas = document.getElementById(canvasID);
+        if (qrCodeCanvas === null) {
+          return;
+        }
+
+        //@ts-expect-error toDataURL
+        const url = qrCodeCanvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = `${cardSlug}.png`;
+        link.href = url;
+        link.click();
+      }
+      setHasCopied(true);
+    },
+    [canvasID, cardSlug],
+  );
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger {...props} asChild>
+        <Button
+          size="icon"
+          variant="outline"
+          className={cn(
+            "relative z-10 h-6 w-6 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50",
+            className,
+          )}
+        >
+          {hasCopied ? (
+            <Icon name="check" className="h-3 w-3" />
+          ) : (
+            <Icon name="download" className="h-3 w-3" />
+          )}
+          <span className="sr-only">Download image</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => downloadCommand("svg")}>
+          Vector (.svg)
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => downloadCommand("png")}>
+          Raster (.png)
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
