@@ -2,8 +2,8 @@
 
 import type { DropdownMenuTriggerProps } from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/navigation";
-import { QRCodeCanvas } from "qrcode.react";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { Icon } from "#/components/Icon";
 import { LoadingSpinner } from "#/components/loading-spinner";
 import { Button } from "#/components/ui/button";
@@ -123,7 +123,41 @@ export function ExistingProgramCard({
   //   },
   // });
 
-  const canvasID = `${card.id.toString()}-qr-canvas`;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const handleDownload = useCallback(
+    (type: "svg" | "png") => {
+      if (type === "png") {
+        const qrCodeCanvas = canvasRef.current;
+        if (qrCodeCanvas == null) {
+          return;
+        }
+
+        const dataURI = qrCodeCanvas.toDataURL("image/png");
+        downloadStringAsFile(dataURI, `${card.slug}.png`);
+      } else if (type === "svg") {
+        const node = svgRef.current;
+        if (node == null) {
+          return;
+        }
+
+        // For SVG, we need to get the markup and turn it into XML.
+        // Using XMLSerializer is the easiest way to ensure the markup
+        // contains the xmlns. Then we make sure it gets the right DOCTYPE,
+        // encode all of that to be safe to be encoded as a URI (which we
+        // need to stuff into href).
+        const serializer = new XMLSerializer();
+        const fileURI = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+          `<?xml version="1.0" standalone="no"?>${serializer.serializeToString(node)}`,
+        )}`;
+
+        downloadStringAsFile(fileURI, `${card.slug}.svg`);
+      }
+    },
+    [card.slug],
+  );
+
   return (
     <Card key={card.id} className="mx-auto flex w-full flex-col sm:w-96">
       <CardHeader className="relative">
@@ -267,17 +301,26 @@ export function ExistingProgramCard({
             rel="noreferrer"
           >
             <QRCodeCanvas
-              id={canvasID}
+              ref={canvasRef}
               size={256}
               title={`${card.name} QR Code`}
               level="L"
               value={`${env.NEXT_PUBLIC_DEPLOY_URL}/${card.slug}`}
             />
+            <div className="hidden" aria-hidden="true">
+              <QRCodeSVG
+                ref={svgRef}
+                size={256}
+                title={`${card.name} QR Code`}
+                level="L"
+                value={`${env.NEXT_PUBLIC_DEPLOY_URL}/${card.slug}`}
+              />
+            </div>
           </a>
         </div>
       </CardContent>
       <CardFooter className="mt-auto justify-between">
-        <DownloadImageButton canvasID={canvasID} cardSlug={card.slug} />
+        <DownloadImageButton downloadImage={handleDownload} />
         {enableShareWithFriends ? (
           <ShareWithFriends programId={card.id} />
         ) : null}
@@ -316,44 +359,22 @@ export function ExistingProgramCard({
 }
 
 interface DownloadImageButtonProps extends DropdownMenuTriggerProps {
-  canvasID: string;
-  cardSlug: string;
+  downloadImage: (type: "svg" | "png") => void;
 }
 
 export function DownloadImageButton({
-  canvasID,
-  cardSlug,
   className,
+  downloadImage,
   ...props
 }: DownloadImageButtonProps) {
   const [hasCopied, setHasCopied] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setTimeout(() => {
       setHasCopied(false);
     }, 2000);
-  }, []);
-
-  const downloadCommand = useCallback(
-    (type: "svg" | "png") => {
-      // TODO:
-      if (type === "png") {
-        const qrCodeCanvas = document.getElementById(canvasID);
-        if (qrCodeCanvas === null) {
-          return;
-        }
-
-        //@ts-expect-error toDataURL
-        const url = qrCodeCanvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        link.download = `${cardSlug}.png`;
-        link.href = url;
-        link.click();
-      }
-      setHasCopied(true);
-    },
-    [canvasID, cardSlug],
-  );
+  }, [hasCopied]);
 
   return (
     <DropdownMenu>
@@ -361,10 +382,7 @@ export function DownloadImageButton({
         <Button
           size="icon"
           variant="outline"
-          className={cn(
-            "relative z-10 h-6 w-6 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50",
-            className,
-          )}
+          className={cn("relative z-10", className)}
         >
           {hasCopied ? (
             <Icon name="check" className="h-3 w-3" />
@@ -375,13 +393,30 @@ export function DownloadImageButton({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => downloadCommand("svg")}>
+        <DropdownMenuItem
+          onClick={() => {
+            downloadImage("svg");
+            setHasCopied(true);
+          }}
+        >
           Vector (.svg)
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => downloadCommand("png")}>
+        <DropdownMenuItem
+          onClick={() => {
+            downloadImage("png");
+            setHasCopied(true);
+          }}
+        >
           Raster (.png)
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
+}
+
+function downloadStringAsFile(data: string, filename: string) {
+  const a = document.createElement("a");
+  a.download = filename;
+  a.href = data;
+  a.click();
 }
