@@ -6,6 +6,10 @@
     {
       "updateTypes": ["minor", "patch"],
       "automerge": true
+    },
+    {
+      "groupName": "Uploadthing dependencies",
+      "matchPackageNames": ["uploadthing", "@uploadthing/react"]
     }
   ],
   "minimumReleaseAge": "7 days",
