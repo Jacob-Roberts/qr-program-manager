@@ -1,13 +1,10 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import {
-  type DefaultSession,
-  type NextAuthOptions,
-  getServerSession,
-} from "next-auth";
+import type { DefaultSession, NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth";
 import type { Adapter } from "next-auth/adapters";
 // import AppleProvider from "next-auth/providers/apple";
-import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
+import Resend from "next-auth/providers/resend";
 import { env } from "#/env";
 import { db } from "#/server/db";
 import {
@@ -45,7 +42,7 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthConfig = {
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -77,11 +74,13 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
-    EmailProvider({
-      from: "noreply@accounts.jakerob.pro",
-      // Custom sendVerificationRequest() function
+    Resend({
+      id: "email",
+      from: "QR Program Manager <noreply@accounts.jakerob.pro>",
+      apiKey: env.RESEND_API_KEY,
       sendVerificationRequest: sendVerificationRequest,
     }),
+
     /**
      * ...add more providers here.
      *
@@ -94,9 +93,13 @@ export const authOptions: NextAuthOptions = {
   ],
 };
 
+export const { auth, handlers, signIn, signOut } = NextAuth(authOptions);
+
 /**
+ * DEPRECATED: Use auth directly
+ *
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */
-export const getServerAuthSession = () => getServerSession(authOptions);
+export const getServerAuthSession = () => auth();

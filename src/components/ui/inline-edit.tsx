@@ -78,7 +78,7 @@ const InlineEdit = ({
   const wasFocusReceivedSinceLastBlurRef = useRef(false);
   const isControlled = typeof isEditing === "undefined";
   const [isEditingState, setEditingState] = useState(startWithEditViewOpen);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const {
     editButtonRef,
@@ -262,7 +262,7 @@ const InlineEdit = ({
 
 // biome-ignore lint/suspicious/noExplicitAny: I didn't write this code, and it works
 const usePrevious = (value: any) => {
-  const ref = useRef();
+  const ref = useRef(undefined);
 
   useEffect(() => {
     ref.current = value;
@@ -276,7 +276,7 @@ const useButtonFocusHook = (
   isEditingState: boolean,
 ) => {
   const editButtonRef = useRef<HTMLButtonElement>(null);
-  const editViewRef = useRef<HTMLElement>();
+  const editViewRef = useRef<HTMLElement>(undefined);
   const preventFocusOnEditButtonRef = useRef(false);
 
   const isControlled = typeof isEditing === "undefined";
@@ -367,7 +367,7 @@ interface ReadViewProps {
   editButtonLabel: string;
   onEditRequested: () => void;
   postReadViewClick: () => void;
-  editButtonRef: React.RefObject<HTMLButtonElement>;
+  editButtonRef: React.RefObject<HTMLButtonElement | null>;
   readViewFitContainerWidth?: boolean;
   readView: () => React.ReactNode;
 }

@@ -8,12 +8,13 @@ export const dynamic = "force-dynamic"; // defaults to auto
 export const runtime = "nodejs";
 
 type GetParams = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export async function GET(_request: Request, { params }: GetParams) {
+export async function GET(_request: Request, props: GetParams) {
+  const params = await props.params;
   // The Program ID Slug that we want to download
   const slug = params.slug;
 

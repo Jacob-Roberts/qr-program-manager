@@ -1,13 +1,12 @@
-import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Icon } from "#/components/Icon";
 import { cn } from "#/lib/utils";
 import { getServerAuthSession } from "#/server/auth";
 
-export default async function Home() {
-  noStore();
-  const session = await getServerAuthSession();
+export const experimental_ppr = true;
 
+export default function Home() {
   return (
     <div className="bg-white">
       <header className="absolute inset-x-0 top-0 z-50">
@@ -22,14 +21,9 @@ export default async function Home() {
             </span>
           </div>
           <div className="flex flex-1 justify-end">
-            <Link
-              href={session ? "/admin" : "/api/auth/signin?callbackUrl=/admin"}
-              className={cn(
-                `rounded-full border border-indigo-500 bg-white/10 px-10 py-3 text-sm font-semibold leading-6 text-indigo-500 no-underline transition hover:bg-indigo-500 hover:text-white`,
-              )}
-            >
-              {session ? "Dashboard" : "Sign in"} &rarr;
-            </Link>
+            <Suspense fallback={<StaticSignInLink isSignedIn={false} />}>
+              <DynamicSignInLink />
+            </Suspense>
           </div>
         </nav>
       </header>
@@ -57,14 +51,11 @@ export default async function Home() {
               for anything, and manage the content behind it. No app required.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Link
-                href={
-                  session ? "/admin" : "/api/auth/signin?callbackUrl=/admin"
-                }
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              <Suspense
+                fallback={<StaticGetStartedButton isSignedIn={false} />}
               >
-                Get started
-              </Link>
+                <DynamicGetStartedButton />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -82,5 +73,39 @@ export default async function Home() {
         </div>
       </main>
     </div>
+  );
+}
+
+async function DynamicSignInLink() {
+  const session = await getServerAuthSession();
+  return <StaticSignInLink isSignedIn={session !== null} />;
+}
+
+function StaticSignInLink({ isSignedIn }: { isSignedIn: boolean }) {
+  return (
+    <Link
+      href={isSignedIn ? "/admin" : "/api/auth/signin?callbackUrl=/admin"}
+      className={cn(
+        `rounded-full border border-indigo-500 bg-white/10 px-10 py-3 text-sm font-semibold leading-6 text-indigo-500 no-underline transition hover:bg-indigo-500 hover:text-white`,
+      )}
+    >
+      {isSignedIn ? "Dashboard" : "Sign in"} &rarr;
+    </Link>
+  );
+}
+
+async function DynamicGetStartedButton() {
+  const session = await getServerAuthSession();
+  return <StaticGetStartedButton isSignedIn={session !== null} />;
+}
+
+function StaticGetStartedButton({ isSignedIn }: { isSignedIn: boolean }) {
+  return (
+    <Link
+      href={isSignedIn ? "/admin" : "/api/auth/signin?callbackUrl=/admin"}
+      className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      Get started
+    </Link>
   );
 }
