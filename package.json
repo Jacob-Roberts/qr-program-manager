@@ -54,7 +54,7 @@
     "drizzle-orm": "0.34.1",
     "nanoid": "5.0.7",
     "next": "^15.0.1-canary.1",
-    "next-auth": "4.24.8",
+    "next-auth": "^5.0.0-beta.25",
     "next-plausible": "3.12.2",
     "qrcode.react": "3.2.0",
     "react": "19.0.0-rc-65a56d0e-20241020",
