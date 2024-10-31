@@ -45,7 +45,7 @@ export async function signInWithGoogle(_: any, formData: FormData) {
 
 const userAuthSchema = z.object({
   email: z.string().email(),
-  callbackUrl: z.string().optional(),
+  callbackUrl: z.string().optional().nullable(),
 });
 
 // biome-ignore lint/suspicious/noExplicitAny: we ignore previous state
