@@ -7,5 +7,5 @@ test("Admin Page", () => {
   render(<ClientPage />);
   expect(
     screen.getByRole("heading", { level: 1, name: "Client page" }),
-  ).toBeDefined();
+  ).toBeInTheDocument();
 });
