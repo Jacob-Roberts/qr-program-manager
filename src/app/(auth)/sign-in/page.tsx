@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Icon } from "#/components/Icon";
 import { cn } from "#/lib/utils";
 import styles from "./authentication.module.css";
-import { UserAuthForm } from "./user-auth-form";
+import { SignInWithEmail } from "./sign-in-with-email.tsx";
+import { SignInWithGoogle } from "./sign-in-with-google.tsx";
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -40,7 +41,20 @@ export default function AuthenticationPage() {
                 Enter your email below to continue.
               </p>
             </div>
-            <UserAuthForm />
+            <div className={"grid gap-6"}>
+              <SignInWithEmail />
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-gray-700 dark:bg-slate-800 dark:text-gray-50">
+                    Or
+                  </span>
+                </div>
+              </div>
+              <SignInWithGoogle />
+            </div>
           </div>
         </div>
       </div>
