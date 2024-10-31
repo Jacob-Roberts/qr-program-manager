@@ -84,7 +84,7 @@ async function DynamicSignInLink() {
 function StaticSignInLink({ isSignedIn }: { isSignedIn: boolean }) {
   return (
     <Link
-      href={isSignedIn ? "/admin" : "/signin?callbackUrl=/admin"}
+      href={isSignedIn ? "/admin" : "/sign-in?callbackUrl=/admin"}
       className={cn(
         `rounded-full border border-indigo-500 bg-white/10 px-10 py-3 text-sm font-semibold leading-6 text-indigo-500 no-underline transition hover:bg-indigo-500 hover:text-white`,
       )}
@@ -102,7 +102,7 @@ async function DynamicGetStartedButton() {
 function StaticGetStartedButton({ isSignedIn }: { isSignedIn: boolean }) {
   return (
     <Link
-      href={isSignedIn ? "/admin" : "/signin?callbackUrl=/admin"}
+      href={isSignedIn ? "/admin" : "/sign-in?callbackUrl=/admin"}
       className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
     >
       Get started
