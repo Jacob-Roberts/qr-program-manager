@@ -7,6 +7,7 @@ const googleAuthSchema = z.object({
   callbackUrl: z.string().optional(),
 });
 
+// biome-ignore lint/suspicious/noExplicitAny: we ignore previous state
 export async function signInWithGoogle(_: any, formData: FormData) {
   const parsedFields = googleAuthSchema.safeParse({
     callbackUrl: formData.get("callbackUrl"),
@@ -26,6 +27,7 @@ const userAuthSchema = z.object({
   callbackUrl: z.string().optional(),
 });
 
+// biome-ignore lint/suspicious/noExplicitAny: we ignore previous state
 export async function signInWithEmail(_: any, formData: FormData) {
   const parsedFields = userAuthSchema.safeParse({
     email: formData.get("email"),
@@ -42,7 +44,7 @@ export async function signInWithEmail(_: any, formData: FormData) {
   await signIn("email", {
     email: parsedFields.data.email,
     redirect: false,
-    callbackUrl: parsedFields.data.callbackUrl ?? "/admin",
+    callbackUrl: parsedFields.data.callbackUrl || "/admin",
   });
 
   return {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-// This could be loaded on the server, but that would require making this route by dynamically loaded.
+// This could be loaded on the server, but that would require making this route be dynamically loaded.
 // I want it to be statically loaded, so I'm okay with this callback functionality to be missing if the
 // browser hasn't yet loaded JS and they submit.
 export function CallbackUrlHiddenInput() {

@@ -6,7 +6,6 @@ import { signInWithGoogle } from "./actions";
 import { LoadingSpinner } from "#components/loading-spinner.tsx";
 import { Icon } from "#components/Icon.tsx";
 import { useActionState } from "react";
-import { useSearchParams } from "next/navigation";
 import { CallbackUrlHiddenInput } from "./callback-url-hidden-input";
 
 export function SignInWithGoogle() {

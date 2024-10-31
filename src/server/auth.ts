@@ -94,12 +94,3 @@ const authOptions: NextAuthConfig = {
 };
 
 export const { auth, handlers, signIn, signOut } = NextAuth(authOptions);
-
-/**
- * DEPRECATED: Use auth directly
- *
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
-export const getServerAuthSession = () => auth();

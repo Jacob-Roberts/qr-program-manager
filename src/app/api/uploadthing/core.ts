@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
 import { UTApi, UploadThingError } from "uploadthing/server";
 import { z } from "zod";
-import { getServerAuthSession } from "#/server/auth";
+import { auth } from "#/server/auth";
 import { db } from "#/server/db";
 import { programs } from "#/server/db/schema";
 
@@ -32,7 +32,7 @@ export const ourFileRouter = {
       }
 
       // This code runs on your server before upload
-      const session = await getServerAuthSession();
+      const session = await auth();
 
       // If you throw, the user will not be able to upload
       if (!session) throw new Error("Unauthorized");

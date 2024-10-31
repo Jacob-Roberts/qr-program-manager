@@ -8,7 +8,6 @@ import { Input } from "#components/ui/input.tsx";
 import { Label } from "#components/ui/label.tsx";
 import { signInWithEmail } from "./actions.ts";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
 import { CallbackUrlHiddenInput } from "./callback-url-hidden-input";
 
 export function SignInWithEmail() {
