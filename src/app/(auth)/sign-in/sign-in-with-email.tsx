@@ -10,23 +10,27 @@ import { signInWithEmail } from "./actions.ts";
 import { toast } from "sonner";
 import { CallbackUrlHiddenInput } from "./callback-url-hidden-input";
 
-export function SignInWithEmail() {
-  const [state, submitAction, isPending] = useActionState(signInWithEmail, {
-    errors: null,
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+async function submitSignInWithEmail(prev: any, formData: FormData) {
+  const res = await signInWithEmail(prev, formData);
+  toast.success("Check your email", {
+    description: "We sent you a login link. Be sure to check your spam too.",
   });
+  return res;
+}
+
+export function SignInWithEmail() {
+  const [state, submitAction, isPending] = useActionState(
+    submitSignInWithEmail,
+    {
+      errors: null,
+    },
+  );
 
   const { errors } = state;
 
   return (
-    <Form
-      action={formData => {
-        submitAction(formData);
-        toast.success("Check your email", {
-          description:
-            "We sent you a login link. Be sure to check your spam too.",
-        });
-      }}
-    >
+    <Form action={submitAction}>
       <div className="grid gap-2">
         <div className="grid gap-1">
           <Label className="sr-only" htmlFor="email">

@@ -26,9 +26,7 @@ const googleAuthSchema = z.object({
 
 // biome-ignore lint/suspicious/noExplicitAny: we ignore previous state
 export async function signInWithGoogle(_: any, formData: FormData) {
-  const parsedFields = googleAuthSchema.safeParse({
-    callbackUrl: formData.get("callbackUrl"),
-  });
+  const parsedFields = googleAuthSchema.safeParse(Object.entries(formData));
   const searchParams = getSearchParams();
 
   let _callback: string | undefined | null;
@@ -52,10 +50,7 @@ const userAuthSchema = z.object({
 export async function signInWithEmail(_: any, formData: FormData) {
   const searchParams = getSearchParams();
 
-  const parsedFields = userAuthSchema.safeParse({
-    email: formData.get("email"),
-    callbackUrl: formData.get("callbackUrl"),
-  });
+  const parsedFields = userAuthSchema.safeParse(Object.entries(formData));
 
   // Return early if the form data is invalid
   if (!parsedFields.success) {
