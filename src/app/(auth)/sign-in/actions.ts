@@ -21,7 +21,7 @@ function getSearchParams() {
 }
 
 const googleAuthSchema = z.object({
-  callbackUrl: z.string().optional(),
+  callbackUrl: z.string().optional().nullable(),
 });
 
 // biome-ignore lint/suspicious/noExplicitAny: we ignore previous state
