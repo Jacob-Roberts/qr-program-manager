@@ -16,12 +16,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "#/components/ui/popover";
-import { getServerAuthSession } from "#/server/auth";
+import { auth } from "#/server/auth";
 
 import { Icon } from "./Icon";
 
 export async function UserButton() {
-  const session = await getServerAuthSession();
+  const session = await auth();
 
   if (!session) {
     redirect("/api/auth/signin");

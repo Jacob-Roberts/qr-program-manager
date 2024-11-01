@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
-import { getServerAuthSession } from "#/server/auth";
+import { auth } from "#/server/auth";
 import { db } from "#/server/db";
 import {
   programShareInvites,
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   const foundProgramInvite = searchPrograms[0];
 
   // Check if they are logged in
-  const session = await getServerAuthSession();
+  const session = await auth();
   if (!session || !session.user) {
     return redirect(
       `/accept-share/account-required?programId=${programId}&token=${token}`,

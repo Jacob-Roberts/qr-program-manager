@@ -24,7 +24,7 @@
     "enabled": true,
     "indentStyle": "space"
   },
-  "organizeImports": { "enabled": true },
+  "organizeImports": { "enabled": false },
   "javascript": {
     "formatter": {
       "arrowParentheses": "asNeeded"
