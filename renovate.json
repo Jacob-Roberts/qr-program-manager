@@ -1,26 +1,15 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:js-app",
-    "group:allNonMajor"
-  ],
-  "labels": [
-    "dependencies"
-  ],
+  "extends": ["config:js-app", "group:allNonMajor"],
+  "labels": ["dependencies"],
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
+      "matchUpdateTypes": ["minor", "patch"],
       "automerge": true
     },
     {
       "groupName": "Uploadthing dependencies",
-      "matchPackageNames": [
-        "uploadthing",
-        "@uploadthing/react"
-      ]
+      "matchPackageNames": ["uploadthing", "@uploadthing/react"]
     }
   ],
   "minimumReleaseAge": "7 days",
