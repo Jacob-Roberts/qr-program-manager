@@ -55,7 +55,7 @@
     "nanoid": "5.0.8",
     "next": "15.0.3-canary.1",
     "next-auth": "5.0.0-beta.25",
-    "next-plausible": "3.12.2",
+    "next-plausible": "3.12.4",
     "qrcode.react": "4.1.0",
     "react": "19.0.0-rc-65a56d0e-20241020",
     "react-dom": "19.0.0-rc-65a56d0e-20241020",
