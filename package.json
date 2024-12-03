@@ -49,7 +49,7 @@
     "@trpc/server": "11.0.0-rc.645",
     "@uploadthing/react": "7.1.1",
     "@vercel/edge-config": "1.4.0",
-    "class-variance-authority": "0.7.0",
+    "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "drizzle-orm": "0.36.4",
     "nanoid": "5.0.8",
