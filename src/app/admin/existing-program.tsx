@@ -246,7 +246,7 @@ export function ExistingProgramCard({
         <CardDescription>Created {card.createdAt}</CardDescription>
         <CardDescription>Updated {card.updatedAt}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-grow flex-col gap-4">
+      <CardContent className="flex grow flex-col gap-4">
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label className="flex justify-center text-xl">
             {card.uploadedFileName}

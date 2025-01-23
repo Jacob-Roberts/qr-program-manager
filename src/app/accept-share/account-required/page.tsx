@@ -58,7 +58,7 @@ export default async function AccountRequired(props: {
         </div>
         <div className="mt-8 space-y-6">
           <Button
-            className="w-full rounded-md bg-indigo-600 py-3 text-white shadow-sm hover:bg-indigo-700"
+            className="w-full rounded-md bg-indigo-600 py-3 text-white shadow-xs hover:bg-indigo-700"
             variant="default"
             asChild
           >

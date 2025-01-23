@@ -198,7 +198,7 @@ function SharedRow({ share, refetchShare }: SharedRowProps) {
           {share.userName?.[0] ?? share.userEmail?.[0] ?? null}
         </AvatarFallback>
       </Avatar>
-      <div className="mr-auto flex flex-shrink flex-grow basis-0 flex-col">
+      <div className="mr-auto flex shrink grow basis-0 flex-col">
         <p className="text-gray-900 dark:text-gray-50">{share.userEmail}</p>
         <p className="text-xs text-gray-500 dark:text-gray-400">Can edit</p>
       </div>
@@ -254,7 +254,7 @@ function InvitedRow({ invite, refetchInvite }: InvitedRowProps) {
       <Avatar>
         <AvatarFallback>{invite.email[0] ?? null}</AvatarFallback>
       </Avatar>
-      <div className="mr-auto flex flex-shrink flex-grow basis-0 flex-col">
+      <div className="mr-auto flex shrink grow basis-0 flex-col">
         <p className="text-gray-900 dark:text-gray-50">{invite.email}</p>
         <p className="text-xs text-gray-500 dark:text-gray-400">
           <Icon name="check" /> Invited

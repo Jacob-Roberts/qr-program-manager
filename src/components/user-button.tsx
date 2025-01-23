@@ -58,7 +58,7 @@ export async function UserButton() {
         <div className="flex flex-col flex-nowrap items-stretch justify-start">
           {/* <Dialog>
             <DialogTrigger asChild>
-              <button className="inline-flex min-h-9  flex-shrink flex-grow basis-0 flex-row items-center justify-start gap-4 rounded-md px-6 py-3 text-gray-700 transition-colors hover:bg-gray-200">
+              <button className="inline-flex min-h-9  shrink grow basis-0 flex-row items-center justify-start gap-4 rounded-md px-6 py-3 text-gray-700 transition-colors hover:bg-gray-200">
                 <div className="flex basis-11 flex-row flex-nowrap items-stretch justify-center">
                   <Icon name="settings" />
                 </div>
@@ -102,7 +102,7 @@ export async function UserButton() {
           </Dialog> */}
           <Link
             href="/api/auth/signout?callbackUrl=/"
-            className="inline-flex min-h-9 flex-shrink flex-grow basis-0 flex-row items-center justify-start gap-4 rounded-md px-6 py-3 text-gray-700 transition-colors hover:bg-gray-200"
+            className="inline-flex min-h-9 shrink grow basis-0 flex-row items-center justify-start gap-4 rounded-md px-6 py-3 text-gray-700 transition-colors hover:bg-gray-200"
           >
             <div className="flex basis-11 flex-row flex-nowrap items-stretch justify-center">
               <Icon name="log-out" />
