@@ -16,6 +16,6 @@
     "@playwright/test": "1.51.1",
     "@types/node": "22.14.1",
     "dotenv": "16.5.0",
-    "typescript": "5.7.3"
+    "typescript": "5.8.3"
   }
 }
