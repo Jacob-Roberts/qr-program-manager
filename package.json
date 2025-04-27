@@ -82,7 +82,7 @@
     "@vitejs/plugin-react": "4.4.1",
     "@vitest/coverage-v8": "2.1.9",
     "autoprefixer": "10.4.21",
-    "drizzle-kit": "0.30.6",
+    "drizzle-kit": "0.31.0",
     "esbuild": "0.25.2",
     "eslint": "8.57.1",
     "eslint-config-next": "15.0.2",
