@@ -74,7 +74,3 @@ function formatDate(date: string | Date) {
 
   return `${fullDate} (${formattedDate})`;
 }
-
-export function EditQRCodeSkeleton() {
-  return <div>TODO:</div>;
-}

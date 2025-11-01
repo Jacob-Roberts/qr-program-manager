@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { EditQRCode, EditQRCodeSkeleton } from "./edit-qrcode.tsx";
+import { EditQRCode } from "./edit-qrcode.tsx";
+import { EditQRCodeSkeleton } from "./edit-qr-code-skeleton";
 
 export default function AdminPage() {
   return (
