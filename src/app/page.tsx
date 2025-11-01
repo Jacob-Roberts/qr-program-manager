@@ -4,8 +4,6 @@ import { Icon } from "#/components/Icon";
 import { cn } from "#/lib/utils";
 import { auth } from "#/server/auth";
 
-export const experimental_ppr = true;
-
 export default function Home() {
   return (
     <div className="bg-white">

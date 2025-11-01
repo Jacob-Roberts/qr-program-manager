@@ -5,6 +5,8 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import PlausibleProvider from "next-plausible";
 import { Inter } from "next/font/google";
 import { extractRouterConfig } from "uploadthing/server";
+import { connection } from "next/server";
+import { Suspense } from "react";
 import { ourFileRouter } from "#/app/api/uploadthing/core";
 import { TailwindIndicator } from "#/components/tailwind-indicator";
 import { Toaster } from "#/components/ui/sonner";
@@ -37,15 +39,9 @@ export default function RootLayout({
           customDomain={env.NEXT_PUBLIC_PLAUSIBLE_CUSTOM_DOMAIN}
           selfHosted={env.NEXT_PUBLIC_PLAUSIBLE_SELF_HOSTED}
         >
-          <NextSSRPlugin
-            /**
-             * The `extractRouterConfig` will extract **only** the route configs
-             * from the router to prevent additional information from being
-             * leaked to the client. The data passed to the client is the same
-             * as if you were to fetch `/api/uploadthing` directly.
-             */
-            routerConfig={extractRouterConfig(ourFileRouter)}
-          />
+          <Suspense>
+            <UTSSR />
+          </Suspense>
           <TRPCReactProvider>
             {children}
             <ReactQueryDevtools position="bottom" initialIsOpen={false} />
@@ -55,5 +51,20 @@ export default function RootLayout({
         </PlausibleProvider>
       </body>
     </html>
+  );
+}
+
+async function UTSSR() {
+  await connection();
+  return (
+    <NextSSRPlugin
+      /**
+       * The `extractRouterConfig` will extract **only** the route configs
+       * from the router to prevent additional information from being
+       * leaked to the client. The data passed to the client is the same
+       * as if you were to fetch `/api/uploadthing` directly.
+       */
+      routerConfig={extractRouterConfig(ourFileRouter)}
+    />
   );
 }

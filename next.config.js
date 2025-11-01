@@ -29,16 +29,11 @@ const ContentSecurityPolicy = `
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  reactCompiler: true,
+  cacheComponents: true,
   typescript: {
     // Set this to false if you want production builds to abort if there's type errors
     ignoreBuildErrors: true,
-  },
-  eslint: {
-    /// Set this to false if you want production builds to abort if there's lint errors
-    ignoreDuringBuilds: true,
-  },
-  experimental: {
-    ppr: "incremental",
   },
   // biome-ignore lint/suspicious/useAwait: lib requires async
   async headers() {

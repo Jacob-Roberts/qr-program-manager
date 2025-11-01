@@ -1,5 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const env = createEnv({
   /**
@@ -7,10 +7,10 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
-      .default("development"),
+      .prefault("development"),
     AUTH_SECRET:
       process.env.NODE_ENV === "production"
         ? z.string()
@@ -21,11 +21,11 @@ export const env = createEnv({
     // APPLE_CLIENT_SECRET: z.string(),
     UPLOADTHING_TOKEN: z.string(),
     RESEND_API_KEY: z.string(),
-    ENABLE_EMAIL_INVITES: z.coerce.boolean().optional().default(false),
+    ENABLE_EMAIL_INVITES: z.coerce.boolean().optional().prefault(false),
     OVERRIDE_ENABLE_SHARE_WITH_FRIENDS: z.coerce
       .boolean()
       .optional()
-      .default(false),
+      .prefault(false),
   },
 
   /**
@@ -34,10 +34,10 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_DEPLOY_URL: z.string().url(),
+    NEXT_PUBLIC_DEPLOY_URL: z.url(),
     NEXT_PUBLIC_PLAUSIBLE_DOMAIN: z.string().min(1),
     NEXT_PUBLIC_PLAUSIBLE_CUSTOM_DOMAIN: z.string().min(1),
-    NEXT_PUBLIC_PLAUSIBLE_SELF_HOSTED: z.boolean({ coerce: true }),
+    NEXT_PUBLIC_PLAUSIBLE_SELF_HOSTED: z.stringbool(),
   },
 
   /**

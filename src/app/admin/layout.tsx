@@ -1,15 +1,12 @@
-import { unstable_noStore as noStore } from "next/cache";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { Icon } from "#/components/Icon";
-import { UserButton } from "#/components/user-button";
+import { UserButton, UserButtonFallback } from "#/components/user-button";
 
 export default function AdminLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  noStore();
-
   return (
     <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-900">
       <header className="flex h-16 w-full items-center border-b bg-white px-4 md:px-6 dark:bg-gray-800 dark:text-gray-100">
@@ -18,7 +15,9 @@ export default function AdminLayout({
           <Icon name="logo" className="h-12 w-12 text-black dark:text-white" />
         </span>
         <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
-        <UserButton />
+        <Suspense fallback={<UserButtonFallback />}>
+          <UserButton />
+        </Suspense>
       </header>
       {children}
       <footer className="flex h-16 w-full items-center border-t bg-white px-4 md:px-6 dark:bg-gray-800">

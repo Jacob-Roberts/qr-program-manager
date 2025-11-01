@@ -48,8 +48,10 @@ export function SignInWithEmail() {
             required
             disabled={isPending}
           />
-          {errors?.email && (
-            <p className="px-1 text-xs text-red-600">{errors.email}</p>
+          {errors?.properties?.email?.errors && (
+            <p className="px-1 text-xs text-red-600">
+              {errors.properties.email.errors}
+            </p>
           )}
         </div>
         <CallbackUrlHiddenInput />

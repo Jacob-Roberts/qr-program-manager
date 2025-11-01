@@ -1,6 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { env } from "#/env";
 import {
   createTRPCRouter,

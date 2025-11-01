@@ -2,8 +2,8 @@
 
 import { workUnitAsyncStorage } from "next/dist/server/app-render/work-unit-async-storage.external";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { z } from "zod";
-import { signIn } from "#server/auth.ts";
+import { z } from "zod/v4";
+import { signIn } from "#server/auth/index.ts";
 
 // this is cursed and shouldn't be relied upon
 function getSearchParams() {
@@ -42,7 +42,7 @@ export async function signInWithGoogle(_: any, formData: FormData) {
 }
 
 const userAuthSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   callbackUrl: z.string().optional().nullable(),
 });
 
@@ -55,7 +55,7 @@ export async function signInWithEmail(_: any, formData: FormData) {
   // Return early if the form data is invalid
   if (!parsedFields.success) {
     return {
-      errors: parsedFields.error.flatten().fieldErrors,
+      errors: z.treeifyError(parsedFields.error),
     };
   }
 

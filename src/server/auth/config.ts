@@ -1,11 +1,11 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import type { DefaultSession, NextAuthConfig } from "next-auth";
-import NextAuth from "next-auth";
-import type { Adapter } from "next-auth/adapters";
+
 // import AppleProvider from "next-auth/providers/apple";
 import GoogleProvider from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
 import { env } from "#/env";
+
 import { db } from "#/server/db";
 import {
   accounts,
@@ -14,7 +14,7 @@ import {
   verificationTokens,
 } from "#/server/db/schema";
 
-import { sendVerificationRequest } from "./email/resend";
+import { sendVerificationRequest } from "../email/resend";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -42,7 +42,7 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
-const authOptions: NextAuthConfig = {
+export const authConfig = {
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -57,7 +57,7 @@ const authOptions: NextAuthConfig = {
     accountsTable: accounts,
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
-  }) as Adapter,
+  }),
   theme: {
     logo: "/icon.svg",
     colorScheme: "auto",
@@ -91,6 +91,4 @@ const authOptions: NextAuthConfig = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
-};
-
-export const { auth, handlers, signIn, signOut } = NextAuth(authOptions);
+} satisfies NextAuthConfig;
