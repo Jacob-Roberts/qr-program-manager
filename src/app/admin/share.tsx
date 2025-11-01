@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { Icon } from "#/components/Icon";
 import { LoadingSpinner } from "#/components/loading-spinner";
 import {
@@ -43,7 +43,7 @@ type ShareWithFriendsProps = {
 };
 
 const formSchema = z.object({
-  email: z.string().email("Email is invalid"),
+  email: z.email("Email is invalid"),
 });
 
 export default function ShareWithFriends({ programId }: ShareWithFriendsProps) {

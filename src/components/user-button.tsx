@@ -114,3 +114,11 @@ export async function UserButton() {
     </Popover>
   );
 }
+
+export function UserButtonFallback() {
+  return (
+    <Avatar className="ml-auto h-9 w-9 cursor-pointer">
+      <AvatarFallback />
+    </Avatar>
+  );
+}

@@ -9,8 +9,6 @@ import {
   programsShares,
 } from "#/server/db/schema";
 
-export const dynamic = "force-dynamic"; // defaults to auto
-
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const programId = searchParams.get("programId");

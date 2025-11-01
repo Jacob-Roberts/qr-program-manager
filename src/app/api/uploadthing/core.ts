@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { type FileRouter, createUploadthing } from "uploadthing/next";
 import { UTApi, UploadThingError } from "uploadthing/server";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { auth } from "#/server/auth";
 import { db } from "#/server/db";
 import { programs } from "#/server/db/schema";
