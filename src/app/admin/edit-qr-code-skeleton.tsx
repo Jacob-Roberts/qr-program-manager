@@ -25,10 +25,10 @@ export function QRCardSkeleton() {
           <Skeleton className="h-6 w-32" />
         </CardTitle>
         <CardDescription>
-          <div className="space-y-1">
-            <Skeleton className="h-4 w-48" />
-            <Skeleton className="h-4 w-52" />
-          </div>
+          <span className="space-y-1">
+            <Skeleton asSpan className="h-4 w-48" />
+            <Skeleton asSpan className="h-4 w-52" />
+          </span>
         </CardDescription>
       </CardHeader>
 
