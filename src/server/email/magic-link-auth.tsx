@@ -28,7 +28,7 @@ export const MagicLinkAuthEmail = ({ loginHref }: MagicLinkAuthEmailProps) => (
     <Preview>Log in with this magic link</Preview>
     <Tailwind>
       <Body className="mx-auto my-auto bg-white px-2 font-sans">
-        <Container className="mx-auto my-[40px] max-w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
+        <Container className="mx-auto my-[40px] max-w-[465px] rounded-sm border border-solid border-[#eaeaea] p-[20px]">
           <Section className="mt-[32px]">
             <Img
               src={`${baseUrl}/static/qr-program-manager-round.png`}
@@ -43,7 +43,7 @@ export const MagicLinkAuthEmail = ({ loginHref }: MagicLinkAuthEmailProps) => (
           </Heading>
           <Section className="mb-[32px] mt-[32px] text-center">
             <Button
-              className="rounded bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+              className="rounded-sm bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
               href={loginHref}
             >
               Click here to log in with this magic link

@@ -332,10 +332,7 @@ const Buttons = ({
 }: ButtonsProp) => {
   return (
     <div
-      className={cn(
-        "absolute end-0 flex flex-shrink-0",
-        styles.buttonsContainer,
-      )}
+      className={cn("absolute end-0 flex shrink-0", styles.buttonsContainer)}
     >
       <Button
         className="z-50 shadow-lg dark:border-stone-200 dark:bg-white dark:text-stone-900 dark:hover:bg-stone-100 dark:hover:text-stone-900"
