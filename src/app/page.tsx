@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Icon } from "#/components/Icon";
 import { cn } from "#/lib/utils";
 import { auth } from "#/server/auth";
+import { headers } from "next/headers";
 
 export default function Home() {
   return (
@@ -75,7 +76,9 @@ export default function Home() {
 }
 
 async function DynamicSignInLink() {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return <StaticSignInLink isSignedIn={session !== null} />;
 }
 
@@ -93,7 +96,9 @@ function StaticSignInLink({ isSignedIn }: { isSignedIn: boolean }) {
 }
 
 async function DynamicGetStartedButton() {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   return <StaticGetStartedButton isSignedIn={session !== null} />;
 }
 

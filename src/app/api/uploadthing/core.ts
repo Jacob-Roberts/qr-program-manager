@@ -24,7 +24,7 @@ export const ourFileRouter = {
       }),
     )
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ input, files }) => {
+    .middleware(async ({ input, files, req }) => {
       for (const file of files) {
         if (file.size > 4 * 1024 * 1024) {
           throw new UploadThingError("File too large");
@@ -32,7 +32,9 @@ export const ourFileRouter = {
       }
 
       // This code runs on your server before upload
-      const session = await auth();
+      const session = await auth.api.getSession({
+        headers: req.headers,
+      });
 
       // If you throw, the user will not be able to upload
       if (!session) throw new Error("Unauthorized");

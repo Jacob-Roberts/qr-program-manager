@@ -43,7 +43,10 @@ export async function GET(request: NextRequest) {
   const foundProgramInvite = searchPrograms[0];
 
   // Check if they are logged in
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+
   if (!session || !session.user) {
     return redirect(
       `/accept-share/account-required?programId=${programId}&token=${token}`,

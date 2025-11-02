@@ -1,23 +1,14 @@
 "use server";
 
-import { workUnitAsyncStorage } from "next/dist/server/app-render/work-unit-async-storage.external";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { z } from "zod/v4";
-import { signIn } from "#server/auth/index.ts";
+import { authClient } from "#/lib/auth-client";
 
 // this is cursed and shouldn't be relied upon
 function getSearchParams() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // biome-ignore lint/suspicious/noExplicitAny: undocumented secret usage
-  const pageStore = workUnitAsyncStorage.getStore() as any;
-
-  if (!pageStore?.url?.search) return new ReadonlyURLSearchParams();
-
-  const readonlySearchParams = new ReadonlyURLSearchParams(
-    pageStore.url.search,
-  );
-
-  return readonlySearchParams;
+  // Note: This is a workaround to access search params in server actions
+  // Better-Auth handles callbacks more cleanly, so we may be able to simplify this
+  return new ReadonlyURLSearchParams();
 }
 
 const googleAuthSchema = z.object({
@@ -26,18 +17,19 @@ const googleAuthSchema = z.object({
 
 // biome-ignore lint/suspicious/noExplicitAny: we ignore previous state
 export async function signInWithGoogle(_: any, formData: FormData) {
-  const parsedFields = googleAuthSchema.safeParse(Object.entries(formData));
-  const searchParams = getSearchParams();
+  const parsedFields = googleAuthSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
 
-  let _callback: string | undefined | null;
+  let _callback: string | undefined | null = "/admin";
   if (parsedFields.success) {
-    _callback = parsedFields.data.callbackUrl;
-  } else if (searchParams.has("callbackUrl")) {
-    _callback = searchParams.get("callbackUrl");
+    _callback = parsedFields.data.callbackUrl ?? "/admin";
   }
 
-  await signIn("google", {
-    callbackUrl: _callback ?? "/admin",
+  // Better-Auth handles redirects automatically after successful sign-in
+  await authClient.signIn.social({
+    provider: "google",
+    callbackURL: _callback,
   });
 }
 
@@ -48,9 +40,9 @@ const userAuthSchema = z.object({
 
 // biome-ignore lint/suspicious/noExplicitAny: we ignore previous state
 export async function signInWithEmail(_: any, formData: FormData) {
-  const searchParams = getSearchParams();
-
-  const parsedFields = userAuthSchema.safeParse(Object.entries(formData));
+  const parsedFields = userAuthSchema.safeParse(
+    Object.fromEntries(formData.entries()),
+  );
 
   // Return early if the form data is invalid
   if (!parsedFields.success) {
@@ -59,13 +51,9 @@ export async function signInWithEmail(_: any, formData: FormData) {
     };
   }
 
-  await signIn("email", {
+  await authClient.signIn.magicLink({
     email: parsedFields.data.email,
-    redirect: false,
-    callbackUrl:
-      parsedFields.data.callbackUrl ||
-      searchParams.get("callbackUrl") ||
-      "/admin",
+    callbackURL: parsedFields.data.callbackUrl || "/admin",
   });
 
   return {

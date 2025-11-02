@@ -4,6 +4,7 @@ import { cn } from "#/lib/utils";
 import styles from "./authentication.module.css";
 import { SignInWithEmail } from "./sign-in-with-email.tsx";
 import { SignInWithGoogle } from "./sign-in-with-google.tsx";
+import { SignInWithPasskey } from "./sign-in-with-passkey.tsx";
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -53,6 +54,7 @@ export default function AuthenticationPage() {
                   </span>
                 </div>
               </div>
+              <SignInWithPasskey />
               <SignInWithGoogle />
             </div>
           </div>
