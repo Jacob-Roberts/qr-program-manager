@@ -55,7 +55,7 @@
     "clsx": "2.1.1",
     "drizzle-orm": "0.44.7",
     "nanoid": "5.1.6",
-    "next": "16.0.3",
+    "next": "16.0.7",
     "next-auth": "5.0.0-beta.30",
     "next-plausible": "3.12.5",
     "qrcode.react": "4.2.0",
