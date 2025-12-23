@@ -83,7 +83,7 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "4.7.0",
-    "@vitest/coverage-v8": "2.1.9",
+    "@vitest/coverage-v8": "4.0.16",
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "0.31.8",
     "esbuild": "0.27.1",
@@ -100,6 +100,6 @@
     "svgo": "3.3.2",
     "tailwindcss": "4.1.17",
     "typescript": "5.9.3",
-    "vitest": "2.1.9"
+    "vitest": "4.0.16"
   }
 }
