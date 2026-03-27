@@ -84,7 +84,7 @@ jobs:
         run: bunx playwright install --with-deps
 
       - name: ▲ Waiting for 200 from the Vercel Preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.3
         if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
         id: waitForDeploy
         with:
